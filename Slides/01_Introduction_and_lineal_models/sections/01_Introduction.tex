@@ -1,0 +1,62 @@
+% Section name and highlighted ToC
+\renewcommand{\sectiontitle}{Introduction}
+\section{\sectiontitle}
+\customToC{currentsection,hideothersubsections}{}
+
+% Section name and highlighted ToC
+\renewcommand{\subsectiontitle}{What is machine learning?}
+\subsection{\subsectiontitle}
+
+% Bishop definition of machine learning
+\begin{frame}{\subsectiontitle}
+    As it is said in the introduction of chapter one in  \cite{BishopPatternRecognition}
+ \textbf{machine learning} \textit{is the field of pattern 
+recognition that is concerned with the automatic
+ discovery of regularities in data and the use of
+these regularities to take actions such as 
+classifying the data into different categories}.
+\end{frame}
+
+% --- Math formulation 
+% 1. Naive perspective 
+\renewcommand{\subsectiontitle}{Math formulation}
+\customToC{currentsection,hideothersubsections}{}
+\subsection{\subsectiontitle}
+\begin{frame}{\subsectiontitle}
+    Let be
+    \begin{itemize}
+        \item an input vector $X \in \mathbb{R}^p$, 
+        \item and out-put function $Y \in \mathbb{R}$.
+    \end{itemize}
+    
+    \textbf{ 
+      We seek a function $f(X)$ for predicting $Y$ given values of the input $X$.
+      }
+\end{frame}
+% 2. Emphasized joint distribution
+\begin{frame}{\textbf{My new} math formulation \footnote{ From \cite{HastieStatisticalLearing}}}
+    Let be
+    \begin{itemize}
+        \item an input vector: $X \in \mathbb{R}^p$, 
+        \item an out-put function: $Y \in \mathbb{R}$,
+        \item  \textbf{with joint distribution $Pr(X,Y)$}.
+    \end{itemize}
+    
+      We seek a function $f(X)$ for predicting $Y$ given values of the input $X$.
+
+      \pause 
+      \begin{theorem}{The idealistic function}
+        
+      \end{theorem}  
+      Exist a function $f: \mathbb{R}^d \longrightarrow \mathbb{R}$ that maps perfectly $X$ and $Y$. 
+      \begin{equation}
+        f(x) = y 
+        \Longleftrightarrow
+        P(x,y) = 1.
+      \end{equation}
+\end{frame}
+\begin{frame}{Our objective}
+    For penalizing the errors in prediction: 
+
+    
+\end{frame}
