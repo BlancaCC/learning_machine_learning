@@ -1,0 +1,14 @@
+% Template v2: BibLaTeX with Biber backend are in my opinion best maintainable citation configurations. IEEE style is common in CS.
+% Bibliography
+\usepackage[
+bibstyle=ieee,
+citestyle=numeric,
+isbn=true,
+doi=true,
+sorting=none,
+url=true,
+% defernumbers=true,
+bibencoding=utf8,
+backend=biber
+]{biblatex} %Imports BibLaTeX package
+\addbibresource{../bibliography.bib} %Import the bibliography file
