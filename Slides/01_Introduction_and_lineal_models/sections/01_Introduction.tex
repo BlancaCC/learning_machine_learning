@@ -7,6 +7,16 @@
 \renewcommand{\subsectiontitle}{What is machine learning?}
 \subsection{\subsectiontitle}
 
+
+%%%% Work summary 
+
+\begin{frame}{Metodology}
+  
+\end{frame}
+
+\begin{frame}{Spent time}
+  
+\end{frame}
 % Bishop definition of machine learning
 \begin{frame}{\subsectiontitle}
     As it is said in the introduction of chapter one in  \cite{BishopPatternRecognition}
@@ -154,6 +164,177 @@ classifying the data into different categories}.
   We also showed that this error function could 
   be motivated as the maximum likelihood 
   solution under an assumed Gaussian noise model.
-  
+\end{frame}
 
+\begin{frame}
+  \frametitle{Maximum likehood and least squares}
+
+  The error function least squared could be motivated
+  al the maximum likelihood solution. 
+
+  \begin{equation}
+    t = y(x,w) + \epsilon 
+  \end{equation}
+  where $\epsilon \sim \mathcal{N}(0, \beta^{-1})$ 
+  and $\beta \in \R$ is the precision ($\beta^{-1} = \sigma^2$). 
+
+  Thus we can write
+  % la probabilidad t a partir de x es 
+  %  igual a la probabilidad de que t lo sea a partir de la normal
+  % abuso de notación N
+  % N es la función de probabilidad de una normal 
+  % de media y y de varianza la inversa de la precisión 
+  \begin{equation}
+    p(t | x, w, \beta) = \mathcal{N}(t | y(x,y), \beta^{-1}). 
+  \end{equation}
+
+  \begin{equation}
+    \mathbb{E}[t | x] = 
+    \int t p(t|x) dt
+    = y(x,w).
+  \end{equation}
+  
+\end{frame}
+
+\begin{frame}
+  Set of inputs $X = \{x_i\}_{1\leq i < n}$, and their targets $\{ t_i\}_{1\leq i < n}$. 
+  So we obtain the following expression for the likelihood function, which is a function adjustable parameters $w$ and $\beta$. 
+
+  % nuestra función y(x,w) es ahora un modelo lineal
+  \begin{equation}
+    p (t | X, w, \beta) = 
+    \prod^{n}_{i=1} 
+    \mathcal{N}(t_i | w^t \phi(x_i), \beta^{-1})
+  \end{equation}
+  Taking logarithm of the likelihood function and using the standard form for the univariate Gaussian
+\end{frame}
+\begin{frame}
+  For a single real-valued variable x, the Gaussian distribution is defined by
+
+  \begin{equation}
+    \mathcal{N}(x | \mu, \sigma^2) 
+    = 
+    \frac{1}{\sqrt{2 \pi \sigma^2}}
+    \exp 
+    \left\{
+      - \frac{1}{2 \sigma^2} (x - \mu)^2
+    \right\}. 
+  \end{equation}
+
+  We have
+  \begin{equation}
+    \log p(t|X,w, \beta) 
+    =
+    \sum^n_{i=1}
+    % first fraction 
+    = \frac{n}{2} \log \beta 
+    - \frac{n}{2} \log  
+    - \frac{n \beta}{2} 
+    \sum_{i = 1}^n
+    (t_i - w^T \phi(x_i))^2.
+  \end{equation}
+
+  Maximum likelihood for $w$ and $\beta$.
+
+  Where is a maximum? 
+
+  Notice that $\beta > 0$ by definition of variance. 
+  The addend where $w$ appears,  are negative parabolas. 
+\end{frame}
+
+\begin{frame}
+  \begin{align}
+    \nabla_w \log p(t|X,w, \beta) 
+    &= 
+    \nabla_w 
+    \left\{ 
+      - \frac{1}{2} 
+      \sum_{i = 1}^n
+      (t_i - w^T \phi(x_i))^2
+    \right\}
+    \\
+    &= 
+    \sum _{i=1}^n
+    (t_i - w^T \phi(x_i))
+    \phi(x_i)^T.
+  \end{align}
+
+  Setting this gradient to zero gives 
+
+  \begin{equation}
+    0 
+    = 
+    \sum_{i = 0}^n
+    t_i \phi(x_i)^T
+    - 
+    w^T
+    \left(
+      \sum_{i=1}^n
+      \phi(x_i)
+      \phi(x_i)^T
+    \right)
+  \end{equation}
+\end{frame}
+
+\begin{frame}
+  Writing as a matrix 
+
+  \begin{equation}
+    \Phi = \{ \phi_c(x_r)\}_{
+        \substack{ 
+          0 \leq c < m\\
+          1 \leq r \leq n
+        }
+    },
+  \end{equation}
+  where $m$ of the models $\phi: \R^d \longrightarrow \R^M$. 
+
+  Solving for $w$ we obtain 
+
+  \begin{equation}
+    w = 
+    \left(
+      \Phi^T \Phi
+    \right)^{-1}
+    \Phi^T t.
+  \end{equation}
+  
+\end{frame}
+
+\begin{frame}
+  \begin{definition}
+    \textbf{Moore-Penrose pseudo-inverse}
+  \begin{equation}
+    \Phi^\dagger 
+    = 
+    \left(
+      \Phi^T \Phi
+    \right)^{-1}
+    \Phi^T
+  \end{equation}
+\end{definition}
+  Properties
+  \begin{itemize}
+    \item Generalization of the notion of inverse to non square matrices.
+    \item If $\Phi$ is square and invertible then $\Phi^\dagger =  \Phi^{-1}$. 
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{The importance of the bias.}
+\end{frame}
+
+\begin{frame}{Maximizing likelihood function with respect the noise parameters}
+  
+\end{frame}
+
+\begin{frame}{Squential learning} 
+\end{frame}
+
+\begin{frame}
+  \frametitle{Regulazed least squares}
+Curvas de nivel
+\end{frame}
+
+\begin{frame}
+  \frametitle{Multiple outputs}
 \end{frame}
