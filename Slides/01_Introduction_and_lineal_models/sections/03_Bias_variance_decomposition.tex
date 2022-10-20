@@ -1,0 +1,66 @@
+\begin{frame}{Bias Variance trade off}
+\section{The Bias-Variance Decomposition}
+\subsection{The bias variance trade-off}
+
+\begin{align}
+    (y(x)-t)^2 
+    &=  
+    (y(x) -\E[t|x] + \E[t|x] -t)^2  
+    \\
+    &= 
+    (y(x) -\E[t|x])^2 
+    + 
+    (\E[t|x] -t)^2 
+    +
+    2(y(x) -\E[t|x])(\E[t|x] -t)
+\end{align}
+
+Substituting into the loss function 
+
+\begin{align}
+    \E[L] &= 
+    \int \int
+    p(x,t) (y(x)-t)^2 
+    dt dx
+\end{align}
+
+Performing the integral over $t$, we see that the cross-term
+vanishes and we obtain 
+
+\begin{align}
+    \E[L]
+    &=  
+    \int 
+    (y(x) -\E[t|x])^2 p(x) dx
+    + 
+    \int 
+    (\E[t|x] -t)^2 p(x) dx
+    \\
+    &=
+    \text{Bias}^2 + Var(y(x)).
+\end{align}
+\end{frame}
+
+\begin{frame}
+    \begin{align}
+        \E[L]
+        &=  
+        \int 
+        (y(x)- E[y] + E[x] -\E[t|x])^2 p(x) dx
+        + 
+        \int 
+        (\E[t|x] -t)^2 p(x) dx
+        \\
+        &=
+        \text{Bias}^2 + Var(y(x)).
+    \end{align}
+
+
+    (bias$)^2$ = $\int (\bar y - h)^2$
+    variance y
+
+    Noise cuánto nos equivocamos de $t$ a $h(x)$. 
+\end{frame}
+
+
+
