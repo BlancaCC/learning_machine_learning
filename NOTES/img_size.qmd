@@ -1,0 +1,15 @@
+---
+title: "resize image"
+format: pdf
+---
+
+![Elephant with small width](elephant.png){width=10%}
+
+![Elephant with larger height](elephant.png){height=50%}
+You can also use px and in as the unit, or specify it between quotes:
+
+![Elephant with height=100px](elephant.png){height=100px}
+
+![Elephant](elephant.png){height=2in}
+
+![Elephant](elephant.png){height="100"}

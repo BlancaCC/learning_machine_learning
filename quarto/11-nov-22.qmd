@@ -1,0 +1,290 @@
+---
+title: "Machine Learning Introduction"
+subtitle: "Regularization and bias variance trade-off"
+author: "Blanca Cano Camarero"
+date: "11 November 2022"
+institute: "Universidad Autónoma de Madrid"
+titlegraphic: "../imgs/logos/uam-iic.jpeg"
+format: 
+  beamer: 
+    aspectratio: 32
+    navigation: horizontal
+    theme: Berlin #Madrid #Antibes
+    colortheme: whale #rose
+toc: True
+toc-depth: 2
+bibliography: ../bibliography.bib
+---
+
+# Last week  
+
+- What is machine learning
+- Lineal models
+
+ 
+# Motivation of regularization  
+
+- Model according to the size of the available training set. 
+- The number of parameters in not necessarily the most appropriate measure of model complexity. 
+- Face over fitting. 
+- Retaining a subset of the predictions of discarding the rest exhibits high variance.
+
+
+# Shrinkage methods
+
+## Prediction accuracy 
+
+- Shrink are more continuous  and don't suffer as much from high variability.   
+
+- When there are many correlated variables in a linea regression model, 
+their coefficient can became poorly determined and exhibit high variance.   
+
+- Wild large positive coefficient on one variable can be canceled y a similarly large positive coefficient on its correlated cousin.   
+
+- By imposing a size constraint on the coefficient this problem is alleviated. 
+
+## Interpretation 
+- We often would like to determine a smaller subset that exhibit the strongest effect.
+
+
+--- 
+# Subset Selection 
+
+# Ridge Regression 
+
+- Ridge regression shrinks the regression coefficients by imposing a penalty 
+on their size.
+
+- The ridge coefficients minimize a penalized residual sum of
+
+
+\begin{align}
+\hat{\beta}^{\text{ridge}}
+& = 
+\text{argmin}_\beta
+    \sum_{i = 1}^N
+    \left(
+        y_i - \beta_0 
+        - \sum_{j = 1}^p
+        x_{i j} \beta_j
+    \right)^2
+\\
+\nonumber
+&
+\text{subject to }
+\sum_{j = 1}^p \beta_j^2 \leq t.
+\end{align}
+
+
+
+# Ridge regression properties   
+
+- There is a one to one correspondence between the parameter $\lambda$ and $t$. 
+
+
+An equivalent way to write the ridge problem is 
+
+$$
+\hat{\beta}^{\text{ridge}}
+= 
+\text{argmin}_\beta
+\left\{
+    \sum_{i = 1}^N
+    \left(
+        y_i - \beta_0 
+        - \sum_{j = 1}^p
+        x_{i j} \beta_j
+    \right)^2
+    + 
+    \lambda
+    - \sum_{j = 1}^p  \beta_j^2
+\right\}
+$$ {#eq-ridge-argmin}
+
+Where $\lambda \leq 0$ is a complexity parameter t
+that controls the amount of shrinkage. 
+
+# Matrix form  
+
+$$
+RSS(\lambda) 
+= 
+(y - X \beta)^T
+(Y - X \beta )
++ \lambda \beta^T \beta
+$$
+
+The ridge regression solution are easily seen to be 
+
+$$
+\hat{\beta}^{\text{ridge}}
+ = 
+ (X^T X + \lambda I)^{-1}
+ X^T y.
+$$ {#eq-ridge-solution}
+
+# Proof ridge 
+
+Denote by $X$ the $X \times (p+1)$ matrix with each row an input vector (with a 1 in the first position)
+$$
+\frac{\partial RSS}{\partial \beta}
+= 
+-2X^T (y - X \beta) + 2 \lambda \beta
+$$ {#eq-ridge-partial-1}
+
+$$
+\frac{\partial \partial RSS}{\partial \beta \partial \beta^T}
+= 
+2X^T X + 2 \lambda
+$$ {#eq-ridge-partial-2}
+
+
+# Proof
+Assuming that $X$ has full column rank, 
+hence $X^T X$ is positive definite, and $\lambda > 0$ we set the first derivative to zero 
+
+$$
+X^T (y - X \beta ) = \lambda \beta
+$$ {#eq-ridge-partial-3}
+
+to obtain the unique solution 
+$$
+\hat \beta
+= 
+(X^T X - I \lambda)^{-1} X^T y.
+$${#eq-ridge-partial-4}
+
+# Which component are more affected by shrinkage 
+
+*Singular value decomposition*
+
+$$
+X = U D V^T
+$$ {#eq-SVD}
+
+Here $U$ and $V$ are $N \times p$ and $p \times p$ 
+orthogonal matrices. 
+
+$D$ is a diagonal matrix of singular values : 
+$$
+d_1 \geq d_2 \geq \ldots \geq d_p \geq 0
+$$. 
+
+Now the ridge regression is 
+
+\begin{align}
+X \hat{\beta}^{\text{ridge}}
+& =
+X(X^T X - I \lambda)^{-1} X^T y
+\\
+& =  
+U D (D^2 + \lambda I)^{-1} D U^T y
+\\
+& =
+\sum_{j = 1}^p 
+u_{* i} \frac{d_{j j} ^2}{d_{j j}^2 + \lambda } u_{* j}^T y. 
+\end{align}
+
+
+
+# Lasso 
+
+\begin{align}
+\hat{\beta}^{\text{lasso}}
+& = 
+\text{argmin}_\beta
+    \sum_{i = 1}^N
+    \left(
+        y_i - \beta_0 
+        - \sum_{j = 1}^p
+        x_{i j} \beta_j
+    \right)^2
+\\
+\nonumber
+&
+\text{subject to }
+\sum_{j = 1}^p |\beta_j| \leq t.
+\end{align}
+
+# Lasso in the equivalent *Lagragian form*
+
+
+$$
+\hat{\beta}^{\text{lasso}}
+= 
+\text{argmin}_\beta
+\left\{
+    \sum_{i = 1}^N
+    \left(
+        y_i - \beta_0 
+        - \sum_{j = 1}^p
+        x_{i j} \beta_j
+    \right)^2
+    + 
+    \lambda
+    - \sum_{j = 1}^p  |\beta_j|
+\right\}
+$$ {#eq-lasso-argmin}
+
+Computing the lasso solution is a quadratic programming (see @QuadraticPrograming)
+Least Angle Regression 
+
+# PCR
+
+principal component regression (PCR)
+
+# Elastic net penalty   
+
+$$
+\lambda \sum_j \alpha \beta_j^2 + (1 - \alpha) |\beta_j|
+$$
+
+
+# Other generalizations ?
+
+# More generalized
+$$
+\hat{\beta}^{\text{general}}
+= 
+\text{argmin}_\beta
+\left\{
+    \sum_{i = 1}^N
+    \left(
+        y_i - \beta_0 
+        - \sum_{j = 1}^p
+        x_{i j} \beta_j
+    \right)^2
+    + 
+    \lambda
+    - \sum_{j = 1}^p  \alpha_j |\beta_j|^p
+\right\}
+$$ {#eq-generalization-argmin}
+subject to $\alpha_j \geq 0$ and
+$$
+\sum_{j = 1}^p  \alpha_j = 1. 
+$$
+
+**Cons: It is worthy since this method is an heuristic?**
+
+# Incorporating prior knowledge 
+
+$$
+
+\hat{\beta}^{\text{prior}}
+= 
+\text{argmin}_\beta
+\left\{
+    \sum_{i = 1}^N
+    \left(
+        y_i - \beta_0 
+        - \sum_{j = 1}^p
+        x_{i j} \beta_j
+    \right)^2
+    + 
+    - \sum_{j = 1}^p  \lambda_j |\beta_j|^q
+\right\}
+$$ {#eq-prio}
+
+**Cons** Opinion of Rich Sutton (see his webpage @TheBitterLesson):
+*And the human-knowledge approach tends to complicate methods in ways that make them less suited to taking advantage of general methods leveraging computation.*
+

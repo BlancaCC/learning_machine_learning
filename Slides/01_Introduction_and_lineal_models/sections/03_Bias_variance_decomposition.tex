@@ -34,10 +34,7 @@ vanishes and we obtain
     (y(x) -\E[t|x])^2 p(x) dx
     + 
     \int 
-    (\E[t|x] -t)^2 p(x) dx
-    \\
-    &=
-    \text{Bias}^2 + Var(y(x)).
+    (\E[t|x] -t)^2 p(x) dx.
 \end{align}
 \end{frame}
 
@@ -46,20 +43,26 @@ vanishes and we obtain
         \E[L]
         &=  
         \int 
-        (y(x)- E[y] + E[x] -\E[t|x])^2 p(x) dx
+        (y(x)- E[y] + E[y] -\E[t|x])^2 p(x) dx
         + 
         \int 
         (\E[t|x] -t)^2 p(x) dx
+        \nonumber
+        \\
+        &=  
+        \int 
+        (E[y] -\E[t|x])^2 p(x) dx
+        +
+        \int 
+        (y(x)- E[y])^2 p(x) dx
+        + 
+        \int 
+        (\E[t|x] -t)^2 p(x) dx
+        \nonumber
         \\
         &=
-        \text{Bias}^2 + Var(y(x)).
+        \text{Bias}^2 + Var(y(x)) + \text{noise}.
     \end{align}
-
-
-    (bias$)^2$ = $\int (\bar y - h)^2$
-    variance y
-
-    Noise cuánto nos equivocamos de $t$ a $h(x)$. 
 \end{frame}
 
 

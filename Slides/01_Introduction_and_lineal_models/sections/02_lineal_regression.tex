@@ -87,6 +87,17 @@
        \hline  
       \end{tabular}
       \end{center}
+
+      
+  \end{frame}
+  \begin{frame}{Activation function caracterization}
+
+    \begin{figure}[t]
+      \includegraphics[height=0.7\textheight]{02_Lineal_models/activation_function_paper.png}
+      \centering
+      \end{figure}
+
+    From \cite{NonpolynomialActivationFunction}.
   \end{frame}
   
   \begin{frame}
@@ -94,8 +105,8 @@
     \section{Least Squares}
     How good is our approximation?
   
-    We also showed that this error function could 
-    be motivated as the maximum likelihood 
+    Least Squares error function could 
+    be \textbf{motivated as the maximum likelihood} 
     solution under an assumed Gaussian noise model.
   \end{frame}
   
@@ -117,7 +128,7 @@
     % N es la función de probabilidad de una normal 
     % de media y y de varianza la inversa de la precisión 
     \begin{equation}
-      p(t | x, w, \beta) = \mathcal{N}(t | y(x,y), \beta^{-1}). 
+      p(t | x, w, \beta) = \mathcal{N}(t | y(x,w), \beta^{-1}). 
     \end{equation}
   
     \begin{equation}
@@ -310,12 +321,16 @@
     \end{equation}
   \end{enumerate}
 
-  Answer 
+  Answers:  
   \begin{itemize}
+    \item \textbf{The probability of a point in a space is zero!!!}
+    \item \textcolor{red}{So this approach only have sense at classification problems}. 
+    \item What about computing the distribution function?
     \item The new training data set got shrunken, 
     since where we got redundance now we got one frequency.
-    \item \textbf{The probability of a point in a space is zero!!!}
+    \item If it worths, would be useful?
+    \item Maybe with too noisy distribution.
   \end{itemize}
-  \textcolor{red}{So this approach only have sense at classification problems}. 
+  
   \end{frame}
 

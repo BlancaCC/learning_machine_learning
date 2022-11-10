@@ -1,0 +1,14 @@
+---
+title: "Machine Learning Introduction"
+subtitle: "Regularization and bias variance trade-off"
+author: "Blanca Cano Camarero"
+date: "11 November 2022"
+institute: "Universidad Autónoma de Madrid"
+titlegraphic: "../imgs/logos/uam-iic.jpeg"
+format: 
+  beamer: 
+    aspectratio: 32
+    navigation: horizontal
+    theme: Antibes
+    colortheme: lily
+---
