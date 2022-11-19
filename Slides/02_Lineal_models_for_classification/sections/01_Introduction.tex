@@ -1,0 +1,57 @@
+\section{Classification introduction}
+
+\subsection{Problem contextualization}
+\begin{frame}
+    \frametitle{Goal of classification}
+
+    The goal in classification is to take an input vector $x$ an 
+    assign it to one of the the $K \in \N$ discrete classes 
+    $\mathcal{C}_k$ where $k \in \{1, \ldots, K\}.$
+
+    Some properties: 
+
+    \begin{itemize}
+        \item In the most common scenario, the classes are taken to be disjoint. 
+        \item The input space is thereby dividen into \textit{decision regions} whose boundaries are called \textit{decision boundaries} or surfaces. 
+    \end{itemize}
+    If we consider linear models for classification, the decisión surface are linear functions of the input vector $x \in \R^D$, 
+    and hence are defined by $(D-1)$-dimensional hyperplanes.      
+
+\end{frame}
+
+% Página 178
+\begin{frame}
+    \frametitle{Problem formulation}
+
+    \begin{itemize}
+        \item Probabilistic models: $K = 2$, two-class problems where: 
+        \begin{itemize}
+            \item There is a single target variable 
+            $$t \in \{0,1\}$$ 
+            \item Class $C_1$ is represented by $t= 1$,
+            \item Class $C_2$ is represented by $t= 0$. 
+            \item We can interpret the value of $t$ as the probability of class $C_1$ taking only extreme values $\{0,1\}$.
+        \end{itemize}
+
+        \item For $K > 2$ classes : \textbf{1 - of- K} coding scheme: 
+        $$t \in \{0,1\}^{K} \text{where one only appears one time. }$$
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Distinct appraches to the classification problem}
+
+    \begin{itemize}
+        \item Constructing a \textbf{\textit{discriminant function}} that directly assigns each vector $x$ to a specific class. 
+        \item Using $p(C_k | x)$ \textit{parametric function}.
+        \item Using $p(C_k | x)$ with a generative approach. 
+    \end{itemize}
+\end{frame}
+
+\subsection{Math formulation}
+\begin{frame}
+    \frametitle{Math formulation}
+
+    
+
+\end{frame}

@@ -11,46 +11,87 @@ format:
     navigation: horizontal
     theme: Berlin #Madrid #Antibes
     colortheme: whale #rose
-toc: True
+toc: False
 toc-depth: 2
 bibliography: ../bibliography.bib
 ---
 
-# Last week  
+# Last meet  
 
 - What is machine learning
+- Problem abstraction 
 - Lineal models
 
- 
-# Motivation of regularization  
+# This week 
 
-- Model according to the size of the available training set. 
+- Quantil regression 
+- Regularization 
+- Bias variance trade off
+
+About ten hours of work. 
+
+# The troubles of expectance   
+
+![Troubles](../imgs/01_ExpectanceAndQuantiles/situation.jpg){height=75%}
+
+# Expectance approximation 
+![Expectance approach](../imgs/01_ExpectanceAndQuantiles/expectance.jpg){height=75%}
+
+# Quantil approach 
+
+![Quantil approach](../imgs/01_ExpectanceAndQuantiles/quantilRegression.jpg){height=75%}
+
+# Article 
+![Beyond expectation: Deep joint mean and quantile regression for spatio-temporal problems](../imgs/01_ExpectanceAndQuantiles/paper.jpg){height=70%}
+\tiny
+See @QuantileRefressionForSpatioTemporalProblem
+
+# Quantile regression   
+
+Instead of using $E[Y|X]$ change it by quantiles
+See @QuantilRegression and @QuantilRegressionInMachineLearning
+
+
+
+# Problems 
+
+- When there are many correlated variables in a linea regression model, 
+their coefficient can became poorly determined and exhibit high variance. 
+
+- Wild large positive coefficient on one variable can be canceled y a similarly large positive coefficient on its correlated cousin. 
+
+- Model according to the size of the available training set to avoid over fitting.  
+
+
 - The number of parameters in not necessarily the most appropriate measure of model complexity. 
-- Face over fitting. 
+
+
+
+# Solution   
+
 - Retaining a subset of the predictions of discarding the rest exhibits high variance.
+ 
+- By imposing a size constraint on the coefficient this problem is alleviated. 
+
+- We often would like to determine a smaller subset that exhibit the strongest effect.
+
+
+# Subset Selection 
+
+Find the best subset of size $k$ that gives smallest residual sum of squares. 
+
+And efficient algorithm is *leap and bounds* (1975)
+
+![\tiny Best subset example from section 3.3.1 @HastieStatisticalLearing ](../imgs/03_Regularization/best_subset.png){width=40%}
+
 
 
 # Shrinkage methods
 
-## Prediction accuracy 
-
-- Shrink are more continuous  and don't suffer as much from high variability.   
-
-- When there are many correlated variables in a linea regression model, 
-their coefficient can became poorly determined and exhibit high variance.   
-
-- Wild large positive coefficient on one variable can be canceled y a similarly large positive coefficient on its correlated cousin.   
-
-- By imposing a size constraint on the coefficient this problem is alleviated. 
-
-## Interpretation 
-- We often would like to determine a smaller subset that exhibit the strongest effect.
+- Shrink are more continuous  and don't suffer as much from high variability.
 
 
---- 
-# Subset Selection 
-
-# Ridge Regression 
+# Shrinkage methods: Ridge Regression 
 
 - Ridge regression shrinks the regression coefficients by imposing a penalty 
 on their size.
@@ -97,15 +138,16 @@ $$
     \right)^2
     + 
     \lambda
-    - \sum_{j = 1}^p  \beta_j^2
+    \sum_{j = 1}^p  \beta_j^2
 \right\}
 $$ {#eq-ridge-argmin}
 
-Where $\lambda \leq 0$ is a complexity parameter t
+Where $\lambda \geq 0$ is a complexity parameter t
 that controls the amount of shrinkage. 
 
 # Matrix form  
 
+Denote by $X$ the $X \times (p+1)$ matrix with each row an input vector (with a 1 in the first position)
 $$
 RSS(\lambda) 
 = 
@@ -120,16 +162,22 @@ $$
 \hat{\beta}^{\text{ridge}}
  = 
  (X^T X + \lambda I)^{-1}
- X^T y.
+ X^T Y.
 $$ {#eq-ridge-solution}
 
 # Proof ridge 
 
-Denote by $X$ the $X \times (p+1)$ matrix with each row an input vector (with a 1 in the first position)
+$$
+RSS(\lambda) 
+= 
+(Y - X \beta)^T
+(Y - X \beta )
++ \lambda \beta^T \beta
+$$ {#eq-ridge-partial-0}
 $$
 \frac{\partial RSS}{\partial \beta}
 = 
--2X^T (y - X \beta) + 2 \lambda \beta
+-2X^T (Y - X \beta) + 2 \lambda \beta
 $$ {#eq-ridge-partial-1}
 
 $$
@@ -151,10 +199,10 @@ to obtain the unique solution
 $$
 \hat \beta
 = 
-(X^T X - I \lambda)^{-1} X^T y.
+(X^T X - I \lambda)^{-1} X^T Y.
 $${#eq-ridge-partial-4}
 
-# Which component are more affected by shrinkage 
+# Which components are more affected by shrinkage ?
 
 *Singular value decomposition*
 
@@ -170,19 +218,29 @@ $$
 d_1 \geq d_2 \geq \ldots \geq d_p \geq 0
 $$. 
 
+**Why $D$ is Positive semi-definite?** 
+\tiny
+(Defines an inner product, see @MatrizDefinidaPositiva and @ProductoEscalar)
+
+# Geometrical understanding
+
+![Geometrica understanding](../imgs/02_Lineal_models/geometrical_undertanding.png){height=75%}
+
+
+# *Singular value decomposition*
 Now the ridge regression is 
 
 \begin{align}
 X \hat{\beta}^{\text{ridge}}
 & =
-X(X^T X - I \lambda)^{-1} X^T y
+X(X^T X - I \lambda)^{-1} X^T Y
 \\
 & =  
-U D (D^2 + \lambda I)^{-1} D U^T y
+U D (D^2 + \lambda I)^{-1} D U^T Y
 \\
 & =
 \sum_{j = 1}^p 
-u_{* i} \frac{d_{j j} ^2}{d_{j j}^2 + \lambda } u_{* j}^T y. 
+u_{* i} \frac{d_{j j} ^2}{d_{j j}^2 + \lambda } u_{* j}^T y_j. 
 \end{align}
 
 
@@ -222,16 +280,25 @@ $$
     \right)^2
     + 
     \lambda
-    - \sum_{j = 1}^p  |\beta_j|
+    \sum_{j = 1}^p  |\beta_j|
 \right\}
 $$ {#eq-lasso-argmin}
 
+Also known as a **sparse model** since some coefficient
+converge to zero.  
+
+\tiny
 Computing the lasso solution is a quadratic programming (see @QuadraticPrograming)
 Least Angle Regression 
 
-# PCR
+# Estimation picture for laso and ridge regression
 
-principal component regression (PCR)
+![Estimation picture](../imgs/03_Regularization/areaApproach.png){height=90%}
+
+# Contours for given $q$  
+
+![Contours for given $q$ ](../imgs/03_Regularization/Contour_of_q.png)
+
 
 # Elastic net penalty   
 
@@ -239,8 +306,14 @@ $$
 \lambda \sum_j \alpha \beta_j^2 + (1 - \alpha) |\beta_j|
 $$
 
+![Contour of elastic net](../imgs/03_Regularization/contour_of_elastic_net.png)
 
 # Other generalizations ?
+
+\pause
+- Elastic net penalty generalization 
+- Introducing prior knowledge
+
 
 # More generalized
 $$
@@ -256,7 +329,7 @@ $$
     \right)^2
     + 
     \lambda
-    - \sum_{j = 1}^p  \alpha_j |\beta_j|^p
+     \sum_{j = 1}^p  \alpha_j |\beta_j|^p
 \right\}
 $$ {#eq-generalization-argmin}
 subject to $\alpha_j \geq 0$ and
@@ -267,9 +340,8 @@ $$
 **Cons: It is worthy since this method is an heuristic?**
 
 # Incorporating prior knowledge 
-
+More freedom could reduce error but could we manage this new complexity?
 $$
-
 \hat{\beta}^{\text{prior}}
 = 
 \text{argmin}_\beta
@@ -281,10 +353,57 @@ $$
         x_{i j} \beta_j
     \right)^2
     + 
-    - \sum_{j = 1}^p  \lambda_j |\beta_j|^q
+  \sum_{j = 1}^p  \lambda_j |\beta_j|^q
 \right\}
 $$ {#eq-prio}
 
 **Cons** Opinion of Rich Sutton (see his webpage @TheBitterLesson):
 *And the human-knowledge approach tends to complicate methods in ways that make them less suited to taking advantage of general methods leveraging computation.*
+
+# Bias variance trade off
+\tiny
+\begin{align}
+        E[L]
+        &=  
+        \int 
+        (y(x)- E[y] + E[y] -E[t|x])^2 p(x) dx
+        + 
+        \int 
+        (E[t|x] -t)^2 p(x) dx
+        \nonumber
+        \\
+        &=  
+        \int 
+        (E[y] -E[t|x])^2 p(x) dx
+        +
+        \int 
+        (y(x)- E[y])^2 p(x) dx
+        + 
+        \int 
+        (E[t|x] -t)^2 p(x) dx
+        \nonumber
+        \\
+        &=
+        \text{Bias}^2 + Var(y(x)) + \text{noise}.
+    \end{align}
+
+#  Bias variance trade off
+
+![Error decomposition](../imgs/03_Regularization/error_descomposition.png)
+
+# How affect lambda 
+
+![Lambda](../imgs/03_Regularization/lambda1.png){height=85%}
+
+# How affect lambda 
+
+![Lambda](../imgs/03_Regularization/lambda2.png)
+
+# What would we do next week   
+
+- Classification 
+
+# References 
+
+\tiny
 
