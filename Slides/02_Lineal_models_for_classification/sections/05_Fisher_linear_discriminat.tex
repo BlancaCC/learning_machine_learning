@@ -165,6 +165,7 @@
         \propto
         S^{-1}_W (m_2 - m_1).
     \end{equation}
+    Note that if the within class covariance is isotropic  (proportional to unit matrix), we find that $S_W$ is proportional to the difference of the class mean. 
 \end{frame}
 
 \begin{frame}
@@ -180,4 +181,63 @@
 \end{frame}
 
 \subsection{Relation between Fisher discriminant and least squares}
+
+\begin{frame}
+    \frametitle{Fisher criterion can be obtained as a special case of least squares}
+
+    We shall take the targets for class $C_1$ to be $\frac{N}{N_1}$
+    and for class $-\frac{N}{N_2}$. 
+
+    The sum if squares error function can be written 
+
+    \begin{equation}
+        E = \frac{1}{2}
+        \sum_{n = 1}^N
+        (w^T x_n + w_0 - t_n)^2.
+    \end{equation}
+
+    Derivatives of $E$ with respect to $w_0$ and $w$ to zero
+
+\end{frame}
+
+\begin{frame}
+    \frametitle{erivatives of $E$ with respect to $w_0$ and $w$ to zero}
+    \begin{equation}\label{eq:05:w0_derivative}
+        \sum_{n = 1}^N (w^T x_n + w_0 - t_n) = 0,
+    \end{equation}
+
+    \begin{equation}
+        \sum_{n = 1}^N (w^T x_n + w_0 - t_n)x_n = 0.
+    \end{equation}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Working with \ref{eq:05:w0_derivative}}
+
+    Since 
+    \begin{equation} \label{eq:05:sum_tn}
+        \sum_{n = 1}^N t_n 
+        = 
+        N_1 \frac{N}{N_1} 
+        - 
+        N_2 \frac{N}{N_2}
+        = 0
+    \end{equation}
+    and 
+    \begin{equation} \label{eq:05:sum_xn}
+        \sum_{n = 1}^N x_n 
+        = N m
+        = N_1 m_1 + N_2 m_2.
+    \end{equation}
+
+   Substituting  \ref{eq:05:sum_xn} and   \ref{eq:05:sum_tn} in \ref{eq:05:w0_derivative}
+   we obtain an expression for the bias in form 
+   \begin{equation}
+    w_0 = -w^T m.
+   \end{equation}
+    
+
+\end{frame}
+
+
 
