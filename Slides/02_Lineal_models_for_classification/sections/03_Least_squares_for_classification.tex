@@ -1,0 +1,109 @@
+\section{Least squares for classification}
+
+\begin{frame}
+    \frametitle{Introduction}
+Motivation: Approximates the conditional expectation $\E[t|x]$
+    
+These probabilities are typically approximated rather poorly, can have values outsides the range
+$(0,1)$. 
+\end{frame}
+
+\begin{frame}
+    \frametitle{Matrix equivalence}
+
+    \begin{equation}
+        y_k(x) = 
+        y^T_{k}x + w_{k 0}
+    \end{equation}
+    where $k \in \{1, \ldots, K\}.$
+    Using vector notation
+
+    \begin{equation}
+        y(x)
+        = 
+        \tilde{W}^T \tilde{x}
+    \end{equation}
+    where $tilde{W}$ is a matrix whose $k^\text{th}$ column comprise the 
+    $D+1$-dimensiona vector
+    $\tilde{w}_k = (w_{k 0}, w^T_k)^T$
+    and $\tilde{x}$ is the corresponding 
+    augmented input vector $(1,x^T)^T$. 
+\end{frame}
+
+\begin{frame}
+    \frametitle{Determining $\tilde{W}$ by minimization error function}
+
+    The sum of squared error function can be written as 
+    \begin{equation}
+        E_D(\tilde{W})
+        = 
+        \frac{1}{2}
+        Tr
+        \{
+            (\tilde{X} \tilde{W} - T)^T
+            (\tilde{X} \tilde{W} - T).
+        \}
+    \end{equation}
+
+
+    Setting the derivative with respect to 
+    $\tilde W$ to zero we obtain the discriminant function in the form
+
+    \begin{equation}
+        \tilde W 
+        = 
+        (\tilde{X}^T\tilde{X})^{-1}
+        \tilde{X}^T T 
+        = 
+        \tilde{X}^\dagger T.   
+    \end{equation}
+\end{frame}
+
+\begin{frame}
+    \frametitle{The discriminat function in the form}
+    \begin{equation}
+        y(x)
+        =
+        \tilde{W}^T \tilde{x}
+        =
+        T^T 
+        \left(
+            \tilde{X}^\dagger T 
+        \right)^T
+        \tilde{x}.
+    \end{equation}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Properties}
+
+    If every target vector in the training set satisfies some linear constraint
+    \begin{equation}
+        a^T t_n + b = 0
+    \end{equation}
+for some constant $a$ and $b$, then the model for 
+any value prediction will satisfy the same constraint 
+so that 
+\begin{equation}
+    a^T y(x) + b = 0.
+\end{equation}
+
+Thus if we use a $1-$of$-K$ coding scheme for $K$ classes, 
+then the prediction made by the model will 
+have the property that the elements of $y(x)$
+will sum to one for anu value of $x$. 
+
+This summation constraint alone is not sufficient to 
+allow the model outputs to be interpreted as 
+probabilities because they are not constrained to lie
+within the interval $(0,1)$. 
+\end{frame}
+
+\begin{frame}
+    \frametitle{Problems}
+\begin{itemize}
+    \item Lack robustness to outliers. 
+\end{itemize}
+    
+
+\end{frame}
