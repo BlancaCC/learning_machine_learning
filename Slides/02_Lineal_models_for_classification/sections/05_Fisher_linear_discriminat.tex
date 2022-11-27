@@ -24,7 +24,7 @@
     \begin{equation}
         m_i = 
         \frac{1}{N_i} 
-        \sum_{n \in C_i}
+        \sum_{n \in C_i} x_n
     \end{equation}
     where $i \in \{1,2\}$ and there are $N_i$ points of class $C_i$.
     
@@ -72,7 +72,7 @@
     \frametitle{Fisher's solution}
 
     Maximize a function a function that will give a large separation between the projected
-    class means while also giving a small variance within each class, \textbf{thereby} minimizing the class overlap. 
+    class means while also giving a small variance within each class, \textbf{thereby minimizing the class overlap}. 
 
     the within-class variance of the transformed data
     from class $C_k$ is therefore given by
@@ -107,9 +107,9 @@
     \end{equation}
     We can make the dependence on $w$ 
     explicit by using
-    \ref{eq:05:projection}
-    \ref{eq:05:proyected_mean}
-    \ref{eq:05:variance}
+    (\ref{eq:05:projection})
+    (\ref{eq:05:proyected_mean})
+    (\ref{eq:05:variance})
     to rewrite the Fisher criterion in the form
 \end{frame}
 
@@ -206,14 +206,13 @@
         \sum_{n = 1}^N (w^T x_n + w_0 - t_n) = 0,
     \end{equation}
 
-    \begin{equation}
+    \begin{equation}\label{eq:05:w_derivative}
         \sum_{n = 1}^N (w^T x_n + w_0 - t_n)x_n = 0.
     \end{equation}
 \end{frame}
 
 \begin{frame}
     \frametitle{Working with \ref{eq:05:w0_derivative}}
-
     Since 
     \begin{equation} \label{eq:05:sum_tn}
         \sum_{n = 1}^N t_n 
@@ -235,9 +234,45 @@
    \begin{equation}
     w_0 = -w^T m.
    \end{equation}
-    
 
 \end{frame}
 
+\begin{frame}
+    \frametitle{Working with  \ref{eq:05:w_derivative}}
 
+    \begin{equation}
+        \left(
+            S_W + \frac{N_1 N_2}{N}S_B
+        \right)
+        w
+        = 
+        N (m_1 - m_2)
+    \end{equation}
+\end{frame}
+
+\subsection{Fisher's discriminant for multiple classes}
+
+\begin{frame}
+    \frametitle{Fisher's discriminant for multiple classes}
+
+    \begin{equation}
+        S_W 
+        =
+        \sum_{k = 1}^K S_k 
+    \end{equation}
+    where 
+    \begin{equation}
+        S_k = 
+        \sum_{n \in C_k}
+        (x_n - m_k)(x_n - m_k)^T
+    \end{equation}
+    \begin{equation}
+        m_k 
+        = 
+        \frac{1}{N_k}
+        \sum_{n \in C_k}
+        x_n
+    \end{equation}
+    
+\end{frame}
 

@@ -1,0 +1,29 @@
+\section{The perceptron algorithm }
+
+
+\begin{frame}
+    \frametitle{Introduction }
+
+    Is another importan example of a linear discriminant model. 
+    Was introduced by Rosenblatt in 1962. 
+    Two class model 
+    \begin{equation}
+        y(x)
+        = 
+        f(w^T \phi(x))
+    \end{equation}
+    where the nonlinear activation function $f$ is given by a 
+    step function of the form 
+
+    \begin{equation}
+        f(x)= \left\{ \begin{array}{lcc}
+            +1,  & a \geq 0 \\
+            \\ -1, & a < 0  \\
+            \end{array}
+  \right.
+    \end{equation}
+
+    The vector $\phi(x)$ will typically include a bias component
+    $\phi_0(x) = 1$. 
+
+\end{frame}

@@ -1,0 +1,162 @@
+% Section name and highlighted ToC
+%\renewcommand{\sectiontitle}{Introduction}
+%\section{\sectiontitle}
+%\customToC{currentsection,hideothersubsections}{}
+
+% Section name and highlighted ToC
+%\renewcommand{\subsectiontitle}{What is machine learning?}
+%\subsection{\subsectiontitle}
+
+
+\begin{frame}{Overview}
+  \tableofcontents
+\end{frame}
+%%%% Work summary 
+
+\section{The origin}
+\begin{frame}
+  \frametitle{The origins}
+  The term \textit{neural network} has its origins
+  in attempts to find mathematical 
+  representations of information processing in 
+  biological system. 
+  
+  TODO: Añadir fuentes del trabajo de historia
+  (McCulloch and Pitts, 1943; Widrow and Hoff, 1960; Rosenblatt, 1962; Rumelhart et al., 1986)
+\end{frame}
+
+\section{Feed-forward Network Functions}
+
+\begin{frame}
+  \frametitle{Feed-forward Network Functions}
+  Lineal models: 
+  \begin{equation}
+    y(x,w) = 
+    f 
+    \left(
+      \sum_{j = 1}^M
+      w_j \phi_j(x)
+    \right)
+  \end{equation}
+where $f$ is a nonlinear activation function in classification 
+and the identity in regression. 
+Our goal is to extend the model by making $\phi$ 
+depend on parameters and then to allow these parameters 
+to be adjusted along with the coefficients $\{w_i\}$. 
+\end{frame}
+
+\subsection{Elements of feed-forward Network Function}
+\begin{frame}
+  \frametitle{Activations}
+
+  First we construct $M$ linear combinations of the input
+  variables $x_1, \ldots, x_D$ in the form
+
+  \begin{equation}
+    a_j 
+    = 
+    \sum_{i = 1}^D
+    w_{j i}^{(1)} x_i
+    w_{j 0}^{(1)}
+  \end{equation}
+  where $j \in \{1, \ldots, M\}$, and the superscript indicates the layer of the network the parameters are in.
+  
+  We shall refer to 
+  \begin{itemize}
+    \item The parameters $w_{j i}^{(1)}$ as \textit{weights}.
+    \item The parameters $w_{j 0}^{(1)}$ as the \textit{biases}. 
+    \item The quantities $a_j$ as \textit{activations}. 
+  \end{itemize}
+\end{frame}
+\begin{frame}
+  \frametitle{Hidden unit and activation functions }
+
+  Each of the \textit{activations} parameters are transformed 
+  using a \textbf{differentiable}, nonlinear 
+  \textit{activation function} $h$
+
+  \begin{equation}\label{eq:05:hidden_units_definiton}
+    z_j = h(a_j). 
+  \end{equation}
+
+  We shall refer to 
+  \begin{itemize}
+    \item The quantities $z_j$ as hidden units. 
+  \end{itemize}
+TODO add examples of activations functions. 
+\end{frame}
+
+\begin{frame}
+  \frametitle{Output unit activations}
+
+  The values \ref{eq:05:hidden_units_definiton}
+are again linearlu combined to give 
+\textit{output unit activations}
+
+\begin{equation} \label{eq:05:definition_output}
+  a_k 
+  = 
+  \sum_{j = 1}^M 
+  w_{k j}^{(2)} z_j
+  w_{k 0}^{(2)}
+\end{equation}
+where $k \in \{1, \ldots, K\}$, and $K$ is the total number of outputs.
+This transformation corresponds to the second layer of the network. 
+\end{frame}
+
+\begin{frame}
+  \frametitle{Network output}
+  Finally, the output unit activations (\ref{eq:05:definition_output}) 
+  are transformed using an appropriate activations function to give 
+  a set of network output. 
+  
+  \begin{itemize}
+    \item For standard regression problems the activation function is the identity so that $y_k = a_k$. 
+    \item For binary classification problems, each output unit activations is transformed using a logistic sigmoid function so that 
+    \begin{equation}
+      y_k = \sigma(a_k)
+    \end{equation}
+    where 
+    \begin{equation}
+      \sigma(a)
+      = 
+      \frac{1}{1}{1  + exp(-a)}.
+    \end{equation}
+
+    \item For multiclass problems a softmax activation function (4.62)
+    \begin{equation}
+      p(C_k | x)
+      = 
+      \frac{p(x|C_k) p(C_k)}{\sum_j p(x|C_j)p(C_j)}
+      = 
+      \frac{exp(a_k)}{\sum{exp(a_j)}}.
+    \end{equation}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{The resulting model}
+
+  \begin{equation}
+    y_k(x, w)
+    = 
+    \sigma
+    \left(
+    \sum_{j = 1}^M
+      w_{k j}^{(2)}
+      h 
+      \left(
+        \sum_{j = 1}^D
+          w_{j i}^{(1)} x_i
+          +
+          w_{j 0}^{(1)}
+      \right)
+      +
+      w_{k 0}^{(2)}
+    \right) 
+  \end{equation}
+TODO: Write as a matrix and print a graph.
+\end{frame}
+
+
+    

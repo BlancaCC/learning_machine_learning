@@ -23,7 +23,7 @@ $(0,1)$.
         = 
         \tilde{W}^T \tilde{x}
     \end{equation}
-    where $tilde{W}$ is a matrix whose $k^\text{th}$ column comprise the 
+    where $\tilde{W}$ is a matrix whose $k^\text{th}$ column comprise the 
     $D+1$-dimensiona vector
     $\tilde{w}_k = (w_{k 0}, w^T_k)^T$
     and $\tilde{x}$ is the corresponding 
@@ -41,8 +41,8 @@ $(0,1)$.
         Tr
         \{
             (\tilde{X} \tilde{W} - T)^T
-            (\tilde{X} \tilde{W} - T).
-        \}
+            (\tilde{X} \tilde{W} - T)
+        \}.
     \end{equation}
 
 
@@ -68,7 +68,7 @@ $(0,1)$.
         =
         T^T 
         \left(
-            \tilde{X}^\dagger T 
+            \tilde{X}^\dagger 
         \right)^T
         \tilde{x}.
     \end{equation}
@@ -91,7 +91,7 @@ so that
 Thus if we use a $1-$of$-K$ coding scheme for $K$ classes, 
 then the prediction made by the model will 
 have the property that the elements of $y(x)$
-will sum to one for anu value of $x$. 
+will sum to one for any value of $x$. 
 
 This summation constraint alone is not sufficient to 
 allow the model outputs to be interpreted as 
