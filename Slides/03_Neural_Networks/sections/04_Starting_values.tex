@@ -1,0 +1,52 @@
+\section{Starting values}
+
+\begin{frame}
+    \frametitle{Near zero}
+    \begin{itemize}
+        \item If the weights are near zero, 
+        then the operative part of the sigmoid is roughly linear,
+        and hence the neural network collapse into an approximately linear model. 
+    
+        \item Become nonlinear as the weights increase. 
+        \item The exact zero weights leads to zero derivatives and perfect symmetry and the algorithm never moves.  
+        \item Starting instead with large weights often lead to poor solutions.
+    \end{itemize}
+
+\end{frame}
+
+\begin{frame}
+    \frametitle{Transfer learning}
+    \begin{definition}
+        Given some/an observations corresponding
+        to $m^s \in \mathbb{N}^+$ source domains 
+        and task and some observations about 
+        $m^T \in \mathbb{N}^T$. 
+        Transfer learning utilizes the knowledge implied in the source
+        domains to improve the performance of the learned decision function
+        on the target domains. 
+    \end{definition}
+
+    \cite{SurveyonTransferLearning} 
+
+    \cite{aji-etal-2020-neural}
+\end{frame}
+
+\begin{frame}
+    \frametitle{My idea}
+    Main idea:
+    \begin{itemize}
+        \item Fix the network architecture. 
+        \item Select a dataframe subset randomly. 
+        \item Build the network from this subset to work perfectly. 
+    \end{itemize} 
+
+\end{frame}
+
+
+\begin{frame}
+    \frametitle{Some problems}
+    \begin{itemize}
+        \item If the architecture \textit{is too big} them overfitting.
+        \item More??
+    \end{itemize}
+\end{frame}

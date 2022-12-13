@@ -1,0 +1,256 @@
+\section{Network Training}
+
+\begin{frame}
+  \frametitle{The error function}
+
+
+\begin{equation}
+  t = y(x,w) + \epsilon 
+\end{equation}
+where $\epsilon \sim \mathcal{N}(0, \beta^{-1})$ 
+and $\beta \in \R$ is the precision ($\beta^{-1} = \sigma^2$). 
+
+Thus we can write
+% la probabilidad t a partir de x es 
+%  igual a la probabilidad de que t lo sea a partir de la normal
+% abuso de notación N
+% N es la función de probabilidad de una normal 
+% de media y y de varianza la inversa de la precisión 
+\begin{equation}
+  p(t | x, w, \beta) = \mathcal{N}(t | y(x,w), \beta^{-1}). 
+\end{equation}
+
+\end{frame}
+
+
+\begin{frame}
+  For a single real-valued variable x, the Gaussian distribution is defined by
+
+  \begin{equation}
+    \mathcal{N}(x | \mu, \sigma^2) 
+    = 
+    \frac{1}{\sqrt{2 \pi \sigma^2}}
+    \exp 
+    \left\{
+      - \frac{1}{2 \sigma^2} (x - \mu)^2
+    \right\}. 
+  \end{equation}
+
+  We have to minimize the following error function
+  \begin{equation}
+    - \log p(t|X,w, \beta) 
+    =
+    \frac{n \beta}{2} 
+    \sum_{i = 1}^n
+    \left\{
+      y(x_i, w)
+      -
+      t_i
+    \right\}^2
+    - 
+    % first fraction 
+    \frac{n}{2} \log \beta 
+    - \frac{n}{2} \log(2 \pi) 
+  \end{equation}
+  which can be used to learn the parameters 
+  $w$ and $\beta$. 
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{The error function}
+
+  Let take the error function as the 
+  \begin{equation}
+    E(w)
+    = 
+    \frac{1}{2} 
+    \sum_{i = 1}^n
+    \left\{
+      y(x_i, w)
+      -
+      t_i
+    \right\}^2
+  \end{equation}
+  where we have discarded additive and multiplicative constant.
+
+  Some considerations: 
+  \begin{itemize}
+    \item The value of $w$ found by minimizing $E(w)$ will be denoted as $w_{ML}$ (maximum likelihood solution).
+    \item The nonlinearity of the network function $y(x_n, w)$ causes the error $E(w)$ to be nonconvex.
+    \item So in practice $W_{ML}$ would be a local minimum. 
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{About the precision}
+
+  Having found $w_{ML}$ the value of $\beta$ can be found by minimizing the negative log likelihood to give 
+
+  \begin{equation}
+    \frac{1}{\beta_{ML}}
+    = 
+    \frac{1}{N}
+    \frac{1}{2} 
+    \sum_{i = 1}^N
+    \left\{
+      y(x_i, w_{ML})
+      -
+      t_i
+    \right\}^2
+  \end{equation}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Multiple target variable}
+
+  \begin{equation}
+    p(t | x, w)
+    = 
+    \mathcal{N}(t | y(x,w), \beta^{-1} I). 
+  \end{equation}
+
+  The noise precision is the given by 
+  \begin{equation}
+    \frac{1}{\beta_{ML}}
+    = 
+    \frac{1}{N K}
+    \sum_{i = 1}^N
+    \|
+    y(x_i, w_{ML}) - t_i
+    \|^2
+  \end{equation}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Minimizing regression case}
+\begin{equation}
+  \frac{\partial E}{\partial a_k}
+  = y_k  - t_k
+\end{equation}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Binary classification problem}
+We have a single target $t$ such that $t = 1$
+dentotes class $C_1$ and $t=0$ denotes class
+$C_2$. 
+
+As we see last week we consider a single output whose
+activation function is a logistic sigmoid: 
+
+\begin{equation}
+  y = 
+  \frac{1}{1 + exp(-a)}
+\end{equation}
+so that 
+\begin{equation}
+  0 
+  \leq 
+  y(x,w)
+  \leq
+  1.
+\end{equation}
+We can interpret $y(x,w)$ as the condicional probability 
+$p(C_1 |x)$.
+\end{frame}
+
+\begin{frame}
+  \frametitle{The cross entropy error function}
+  The conditional distribution of targets given 
+  inputs is the Bernoulli distribution of the form
+
+  \begin{equation}
+    p(t|x,w)
+    = 
+    y(x,w)^t
+    \left\{
+      1 - y(x,w)
+    \right\}^{1-t}.
+  \end{equation}
+
+  If we consider a training set of independent observation, 
+  then the error function which is given by the negative log 
+  likelihood, is then a cross entropy error function of the form 
+
+  \begin{equation}
+    E(w)
+    =
+    - 
+    \sum_{n = 1}^N
+    \left\{ 
+      t_n \log y_n
+      +
+      (1-t_n) \log(1 - y_n)
+    \right\}
+  \end{equation}
+Using cross entropy error function instead of the sum of squares 
+for classification problem leads to faster training as well as improved generalization.
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{K binary classification}
+
+  \begin{equation}
+    p(t|x,w)
+    = 
+    \prod_{k=1}^K
+    y(x,w)^t
+    \left\{
+      1 - y(x,w)
+    \right\}^{1-t}.
+  \end{equation}
+
+  \begin{equation}
+    E(w)
+    =
+    - 
+    \sum_{n = 1}^N
+    \sum_{k = 1}^K
+    \left\{ 
+      t_{n k} \log y_{n k}
+      +
+      (1-t_{n k}) \log(1 - y_{n k})
+    \right\}
+  \end{equation}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{1 of K coding scheme}
+The network outputs are interpreted as
+\begin{equation}
+  y_k(x,w)
+  = 
+  p(t_k = 1 | x),
+\end{equation}
+leading to the following error function
+  \begin{equation}
+    E(w)
+    = 
+    - \sum_{n=1}^N
+    \sum_{k=1}^K
+    t_{k n}
+    \log y_k(x_n, w).
+  \end{equation}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Parameter optimization}
+  Backpropagation.
+\end{frame}
+
+\begin{frame}
+  \frametitle{Next week}
+
+  \begin{itemize}
+    \item More method??
+    \item Regularization.
+    \item Convolutional networks.
+    \item Mixture Density Networks
+  \end{itemize}
+  
+
+\end{frame}

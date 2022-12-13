@@ -21,7 +21,6 @@
   representations of information processing in 
   biological system. 
   
-  TODO: Añadir fuentes del trabajo de historia
   (McCulloch and Pitts, 1943; Widrow and Hoff, 1960; Rosenblatt, 1962; Rumelhart et al., 1986)
 \end{frame}
 
@@ -57,6 +56,7 @@ to be adjusted along with the coefficients $\{w_i\}$.
     = 
     \sum_{i = 1}^D
     w_{j i}^{(1)} x_i
+    +
     w_{j 0}^{(1)}
   \end{equation}
   where $j \in \{1, \ldots, M\}$, and the superscript indicates the layer of the network the parameters are in.
@@ -83,14 +83,26 @@ to be adjusted along with the coefficients $\{w_i\}$.
   \begin{itemize}
     \item The quantities $z_j$ as hidden units. 
   \end{itemize}
-TODO add examples of activations functions. 
+\footnote{Show examples of activations functions.} 
+\end{frame}
+
+\begin{frame}
+  \frametitle{Discussion: What is the real importance of activation function}
+  \begin{itemize}
+    \item The hypothesis: should't be polynomial.
+    \item ReLu is the most used.
+    \item Kernel method, the kernel not as relevant.
+    \item Balance between precision  and computational cost?
+  \end{itemize}
+  
+
 \end{frame}
 
 \begin{frame}
   \frametitle{Output unit activations}
 
-  The values \ref{eq:05:hidden_units_definiton}
-are again linearlu combined to give 
+  The values (\ref{eq:05:hidden_units_definiton})
+are again lineal combined to give 
 \textit{output unit activations}
 
 \begin{equation} \label{eq:05:definition_output}
@@ -98,6 +110,7 @@ are again linearlu combined to give
   = 
   \sum_{j = 1}^M 
   w_{k j}^{(2)} z_j
+  +
   w_{k 0}^{(2)}
 \end{equation}
 where $k \in \{1, \ldots, K\}$, and $K$ is the total number of outputs.
@@ -120,7 +133,7 @@ This transformation corresponds to the second layer of the network.
     \begin{equation}
       \sigma(a)
       = 
-      \frac{1}{1}{1  + exp(-a)}.
+      \frac{1}{1  + exp(-a)}.
     \end{equation}
 
     \item For multiclass problems a softmax activation function (4.62)
@@ -155,7 +168,42 @@ This transformation corresponds to the second layer of the network.
       w_{k 0}^{(2)}
     \right) 
   \end{equation}
-TODO: Write as a matrix and print a graph.
+\footnote{ Comment differences with lineal regression}
+ \footnote{Write as a matrix and print a graph.}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Example of a neural network having a general feed-forwed topology}
+  I have not found any article that create a math formulation. 
+  \begin{itemize}
+    \item Add skip layer connection explicitly. 
+    \item Same treat. 
+  \end{itemize}
+Other example recurrent neural 
+
+Fundamentals of Recurrent Neural Network (RNN) and Long Short-Term Memory (LSTM) Network
+\cite{FundamentalsOfRecurrentNerualNetwork} (difference equations and PST). 
+\end{frame}
+
+\begin{frame}
+  \frametitle{Weight space symmetries}
+
+  Change the weights and obtain the same results.
+
+  How to obtain symmetries?
+  \begin{itemize}
+    \item Changing the sigh of all nodes and using that $tanh$ is odd. 
+    \item Permuting hidden nodes. 
+  \end{itemize}
+  Bisop: Role comparing with the Bayesian model. 
+  For us: There are going to be different solutions. 
+  
+  Some observation: 
+  \begin{itemize}
+    \item Homotopy of the image for me the same function. 
+    \item There are any approach that use equivalence class?
+    \item \cite{OptimizingNeuralNetworksintheEquivalentClassSpace}
+  \end{itemize}
 \end{frame}
 
 
