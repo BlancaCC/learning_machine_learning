@@ -3,7 +3,7 @@
 \begin{frame}
     \frametitle{Overview}
     Often \textbf{neural networks have to many weights} and will overfit the data at 
-    the global minimum.
+    the global minimum.\footnote{\cite{HastieStatisticalLearing} page 398}
     
     \begin{itemize}
         \item Early stopping.
@@ -13,5 +13,44 @@
     \cite{AUniversalLawofRobustness} 
     ( over-parameterized regime where the parameters of
      the model exceed the size of the training dataset.)
+\end{frame}
+
+\begin{frame}
+    \frametitle{Weight decay}
+    Analogous to ridge regression used for linear models. 
+
+    We add a penalty to the error function 
+    $R(\theta) + \lambda J(\theta)$, 
+    where 
+    \begin{equation}
+        J(\theta)
+        =
+        \sum_{k m} \beta_{k m}^2
+        +
+        \sum_{m l} \alpha_{m l}^2
+    \end{equation}
+    and $\lambda \geq 0$ is a tuning parameter.
+
+    Larger values of $\lambda$ will tend to 
+    shrink the weights toward zero.
+
+    The effet to the penalty is to simply add
+    terms $2 \beta_{k m}$ and $2 \alpha_{m l}$
+    to the respective gradient expressions. 
+\end{frame}
+
+\begin{frame}
+        \frametitle{weight eliminaition penalty}
+(Similar to lasso)
+    \begin{equation}
+        J(\theta)
+        =
+        \sum_{k m}
+            \frac{\beta_{k m}^2}{1 + \beta^2_{km}}
+        +
+        \sum_{m l}
+            \frac{\alpha^2_{m l}}{1 + \alpha_{ml}^2},
+    \end{equation}
+    this has te effect of shrinking smaller weights more. 
 \end{frame}
 

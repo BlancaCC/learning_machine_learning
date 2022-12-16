@@ -1,4 +1,4 @@
-\section{Starting values}
+\section{Initialization}
 
 \begin{frame}
     \frametitle{Near zero}
@@ -39,9 +39,91 @@
         \item Select a dataframe subset randomly. 
         \item Build the network from this subset to work perfectly. 
     \end{itemize} 
-
 \end{frame}
 
+\begin{frame}
+    \frametitle{Some notation}
+    
+        \begin{align}
+            &h: \R^d \longrightarrow \R^s,\\
+            &h_k(x) = \sum_{i= 1}^n 
+                \left(
+                    \beta_{i k} 
+                    \gamma
+                    \left( 
+                        \sum_{j = 1}^d
+                        (
+                            \alpha_{i j} x_j
+                        ) + \alpha_{0 j}
+                    \right)
+                \right).
+        \end{align}
+        determined by its params: 
+        \begin{align}
+            (A,B,S) \in R^{n \times s} \times R^{d \times n} \times R^{d}.
+        \end{align} 
+        \begin{align*}\label{eq:representation red neuronal}
+            A &= (\alpha_{i j}) \text{ con }  i \in \{1, \ldots d\}, \; j \in \{1, \ldots n\}. \\
+            S &= (\alpha_{0 j}) \text{ con }  j \in \{1, \ldots, n\}. \\
+            B &= (\beta_{j k}) \text{ con }  j \in \{1, \ldots n\}, \; k \in \{1, \ldots s\}.
+        \end{align*}
+    
+\end{frame}
+
+\begin{frame}
+    \frametitle{Algorithm description: 1. Values initialization}
+    Let be $h \in  \mathcal{H}(\R^d, \R^s)$
+ with $n$ hidden units. 
+and let $M \in R^+$ chosen
+
+    % First steps, initialize de values
+    1. Take randomly $p \in \R^{d+1} \setminus \{0\}$.  
+
+    2. Let $\Lambda$ be an empty set.   
+
+    3.  While $|\Lambda| < n$ repeat:
+    \begin{enumerate}
+        \item Pick randomly $(x,y) \in \mathcal{D}$.
+        \item If $x$ satisfies that for every $(z,w) \in \Lambda$
+        \begin{equation}
+            p \cdot (x - z) \neq 0,
+        \end{equation}
+        then let $\Lambda \gets \Lambda \cup \{(x,y)\}$.
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Order de set}
+    Without loss of generality the elements of $\Lambda$
+    \begin{equation*}
+        \Lambda = \{(x_1,y_1), (x_2,y_2), \ldots (x_n, y_n)\}
+    \end{equation*}
+    are ordered by the following statement
+    \begin{equation}
+        p \cdot x_1 < p \cdot x_2< \ldots p \cdot x_n.
+    \end{equation}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Solve equation}
+
+    Pick  $(x_1, y_1) \in \Lambda$ \\
+    \begin{align*}
+         &S_1 = M p_0, \\
+         & A_{1 *} = M p_{[1,d]}, \\
+         & B_{* 1} = y_1.
+     \end{align*}
+    For $k \in \{1, \ldots, n \}$
+     \begin{align*}
+         &S_{k} = M -  \frac{2 M}{p \cdot (x_k - x_{k-1})}(p \cdot x_{k}),\\
+         & A_{k i} = \frac{2 M}{p \cdot (x_k - x_{k-1})}
+         p_{i}  \quad i \in \{1, \ldots d\},\\
+         & B_{* k} = y_k - y_{k-1}.
+     \end{align*} 
+     where $(x_k, y_k) \in \Lambda$.
+
+     $(A,S,B)$ are the matrix we searched for.
+\end{frame}
 
 \begin{frame}
     \frametitle{Some problems}
@@ -50,3 +132,182 @@
         \item More??
     \end{itemize}
 \end{frame}
+
+\section{Activation function selection}
+\begin{frame}
+    \frametitle{Activation function selection. Theorem}
+
+    \textbf{See neural network as a functional spaces}
+
+    Sea $\phi \in \mathcal{A}(\R^2)$ una función afín 
+    cuya forma matricial asociada es de la forma:  
+    \begin{equation}
+        \phi((x,y)) =  
+        \begin{bmatrix}
+            a & 0 \\
+             0& b 
+        \end{bmatrix}
+        \begin{bmatrix}
+            x \\
+            y
+        \end{bmatrix}
+        +
+        \begin{bmatrix}
+            t_x  & t_y
+        \end{bmatrix}
+    \end{equation}
+    con $a,b \in \R^*$ y $t_x, t_y \in \R$.
+
+    
+    Sean dos funciones de activación $\sigma, \gamma$ tales que 
+    \begin{equation*}
+        \phi(Grafo(\sigma)) = Grafo(\gamma),
+    \end{equation*}
+    entonces 
+    el espacio de redes neuronales de $n$ neuronas creado a partir de la función de activación $\sigma$ es  
+    igual al espacio de redes neuronales creado a partir la función de activación $\gamma$. 
+\end{frame}
+
+\begin{frame}
+    \frametitle{Proof part 1}
+    Sea $\mathcal{H}^+_{\sigma, n}(\R^d, \R^s)$ el espacio de redes neuronales con $n$ neuronas con sesgo. 
+
+    Está claro que 
+    $\mathcal{H}^+_{\gamma, n}(\R^d, \R^s)$ 
+        y 
+        $\mathcal{H}^+_{\sigma, n}(\R^d, \R^s)$ 
+        son biyectivos.
+   
+    Ya que basta con tomar una red neuronal de una y cambiarle la función de activación por la de la otra. 
+    Veamos 
+    que se da la igualdad viendo que una está contenida en la otra. 
+
+    Para cualquier $h  \in \mathcal{H}^+_{\sigma, n}(\R^d, \R^s)$
+    la proyección i-ésima de $h$ será de la forma 
+
+    \begin{equation*}
+        h_i(x) = \sum^n_{j=1}(\beta_{j} \sigma(A_j(x))+ k_j),
+    \end{equation*}
+    con $x \in \R^d, \beta_{j}, k_j \in \R, A_j \in \mathcal{A}(\R)$. 
+\end{frame}
+
+\begin{frame}
+    \frametitle{Proof part 2}
+
+       % Se define la h tilda: 
+       Procedemos a definir $\tilde{h}_i(x)$ como sigue 
+       \begin{align}\label{eq:h-tilda-definition}
+           \tilde{h}_i(x) 
+           = \sum^n_{j=1}(\beta_{j}  (b \sigma( a A_j(x) + t_x) + t_y)+ k_j)
+           = \sum^n_{j=1}(\tilde{\beta}_{j} \sigma(\tilde{A}_j(x))+ \tilde{k_j}),
+       \end{align}
+       con $x \in \R^d, \tilde \beta_{j}, \tilde k_j \in \R, \tilde{A}_j \in \mathcal{A}(\R)$,
+       por lo que está claro que $\tilde{h}(x) \in \mathcal{H}^+_{\sigma, n}(\R^d, \R^s)$. 
+    
+       Observemos que la 
+       hipótesis del enunciado 
+       establece que
+       \begin{align}
+           Grafo(\gamma) &= \{ (x, \gamma(x)) \colon x \in \R \} 
+           \\
+           & = 
+           Grafo(\gamma)  = \phi(Grafo(\sigma)) 
+           \\
+           & = 
+           \phi( \{ (x, \sigma(x)) \colon x \in \R \})
+           \\
+           &=
+           \{ (a x + t_x, b \sigma(x) + t_y) \colon x \in \R \}.
+       \end{align}
+
+\end{frame}
+
+
+\begin{frame}
+    \frametitle{Proof part 3}
+
+    Por lo que $\tilde{h}$ así definida 
+    es a su vez 
+    \begin{align}
+        \tilde{h}_i(x) 
+        = \sum^n_{j=1}(\beta_{j}  \gamma A_j(x)+ k_j)
+    \end{align}
+     es decir que $\tilde{h}(x) \in \mathcal{H}^+_{\gamma, n}(\R^d, \R^s)$. 
+    Así que vía $\phi$ se ha definido una inyección 
+    de $\mathcal{H}^+_{\sigma, n}(\R^d, \R^s)$ a 
+    $\mathcal{H}^+_{\gamma, n}(\R^d, \R^s)$, 
+    esto es 
+    \begin{equation}
+        \mathcal{H}^+_{\sigma, n}(\R^d, \R^s)
+        \subseteq
+        \mathcal{H}^+_{\gamma, n}(\R^d, \R^s).  
+    \end{equation}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Proof part 4}
+
+    Además, $\phi$ con las hipótesis exigidas es
+    invertible, con inversa: 
+    \begin{equation}
+        \phi^{-1}((x,y)) =  
+        \begin{bmatrix}
+            \frac{1}{a} & 0 \\
+             0& \frac{1}{b} 
+        \end{bmatrix}
+        \begin{bmatrix}
+            x \\
+            y
+        \end{bmatrix}
+        +
+        \begin{bmatrix}
+            - \frac{t_x}{a}  &  - \frac{t_y}{b}
+        \end{bmatrix}.
+    \end{equation}
+    
+\end{frame}
+\begin{frame}
+    \frametitle{Proof part 5}
+
+    Así que razonando de igual manera que en el 
+    apartado anterior se tiene la inclusión
+    \begin{equation}
+        \mathcal{H}^+_{\sigma, n}(\R^d, \R^s)
+        \supseteq
+        \mathcal{H}^+_{\gamma, n}(\R^d, \R^s),  
+    \end{equation}
+    por lo que podemos concluir que 
+    \begin{equation*}
+        \mathcal{H}^+_{\gamma, n}(\R^d, \R^s) 
+        = 
+        \mathcal{H}^+_{\sigma, n}(\R^d, \R^s).
+    \end{equation*}
+ 
+\end{frame}
+
+\begin{frame}
+    \frametitle{Proof part 6}
+
+    
+    \begin{equation*}
+        \mathcal{H}^+_{\sigma, n}(\R^d, \R^s) = \mathcal{H}^+_{\gamma, n}(\R^d, \R^s) 
+        \subset 
+            \mathcal{H}_{\gamma, n+1}(\R^d, \R^s) 
+        \subset
+        \mathcal{H}^+_{\gamma, {n+1}}(\R^d, \R^s) = \mathcal{H}^+_{\sigma, {n+1}}(\R^d, \R^s) 
+        .
+    \end{equation*}
+    Por lo que para un $n$ arbitrariamente grande, se acaba de probar lo buscado. 
+    \begin{equation*}
+        \mathcal{H}_{\gamma}(\R^d, \R^s) = \mathcal{H}_{\sigma}(\R^d, \R^s).
+    \end{equation*}
+
+
+\end{frame}
+
+\begin{frame}
+    \frametitle{Why is util}
+    Choose the one with lest computational cost and
+    potential solutions would be the same. 
+\end{frame}
+

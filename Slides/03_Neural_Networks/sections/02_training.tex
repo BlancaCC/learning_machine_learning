@@ -237,20 +237,383 @@ leading to the following error function
   \end{equation}
 \end{frame}
 
+\section{Universal approximator}
 \begin{frame}
-  \frametitle{Parameter optimization}
-  Backpropagation.
+  \frametitle{Universal approximator}
+
+  This paper rigorously establishes that standard multilayer feedforward networks with as few as one hidden layer using arbitrary squashing functions are capable of approximating any Borel measurable function from one finite dimensional space to another to any desired degree of accuracy, provided sufficiently many hidden units are available. In this sense, multilayer feedforward networks are a class of universal approximators.
+  \cite{Multilayerfeedforwardnetworksareuniversalapproximators}
+
+\end{frame}
+\section{Backpropagation}
+\begin{frame}
+  \frametitle{Backpropagation}
+\begin{equation}\label{eq:descenso-gradiente}
+    h_{t+1}  = h_t - \eta \nabla E(h_t).
+\end{equation} 
+Properties 
+\begin{itemize}
+  \item Local optimization. 
+  \item Fix the number of neurons first. 
+  \item $\eta$ is a hyperparameter.  
+\end{itemize}
 \end{frame}
 
 \begin{frame}
-  \frametitle{Next week}
+  \frametitle{Our model}
 
-  \begin{itemize}
-    \item More method??
-    \item Regularization.
-    \item Convolutional networks.
-    \item Mixture Density Networks
-  \end{itemize}
+  \begin{equation}\label{eq:red-neuronal-que-aprender}
+    h_k(x) = 
+    \sum_{j=1}^n \beta_{j k}
+    \sigma
+    \left(  
+        \alpha_{0 j} +
+        \sum_{i=1}^d \alpha_{i j}x_i
+    \right)
+\end{equation}
   
+\end{frame}
+
+\begin{frame}
+  \frametitle{Derivative with respect to $\beta_{v w}$ st $v \in \{1, \ldots, n\}$ and $w \in \{1, \ldots, s\}$}
+{\tiny
+    \begin{align} \label{eq:parcial_beta}
+        \frac{\partial E(h)}{\partial \beta_{v w}} 
+        = &
+        \frac{\partial}{\partial \beta_{v w}}
+        \left[
+            \frac{1}{2}
+            \sum_{(x,y) \in \mathcal{D}}
+            \sum_{k = 1}^s 
+            \left(h_k(x) - y_k \right)^2
+        \right]
+        \\ % primer paso regla de la cadena
+        = &
+        \frac{1}{2}
+        \sum_{(x,y) \in \mathcal{D}}
+        \sum_{k = 1}^s 
+        2 \left(h_k(x) - y_k \right)
+        \frac{\partial h_k(x)}{\partial \beta_{v w}} 
+        \\ 
+        = & % desarrollamos h
+        \sum_{(x,y) \in \mathcal{D}}
+        \sum_{k = 1}^s 
+        \left(h_k(x) - y_k \right)
+        \frac{\partial}{\partial \beta_{v w}} 
+        \left[
+            \sum_{j = 1}^n 
+                \beta_{j k}
+                \sigma
+                \left(  
+                    \alpha_{0 j} +
+                    \sum_{i=1}^d \alpha_{i j}x_i
+                \right)
+        \right] 
+        \\ 
+        = & % parcial de la suma es suma de parciales 
+        \sum_{(x,y) \in \mathcal{D}}
+        \sum_{k = 1}^s 
+        \left(h_k(x) - y_k \right)
+        \left(
+            \sum_{j = 1}^n 
+            \frac{\partial}{\partial \beta_{v w}} 
+            \left[
+                \beta_{j k}
+                \sigma
+                \left(  
+                    \alpha_{0 j} +
+                    \sum_{i=1}^d \alpha_{i j}x_i
+                \right)
+            \right]
+        \right) 
+        \\ 
+        = & % Expresión a partir de la función caraterísticas
+        \sum_{(x,y) \in \mathcal{D}}
+        \sum_{k = 1}^s 
+        \left(h_k(x) - y_k \right)
+        \left(
+            \sum_{j = 1}^n 
+                \chi_{[j = v \wedge k = w]}
+                \sigma
+                \left(  
+                    \alpha_{0 j} +
+                    \sum_{j=1}^d \alpha_{i j}x_i
+                \right)
+        \right)
+        \\ 
+        = & % Expresión final quitando términos nulos 
+        \sum_{(x,y) \in \mathcal{D}}
+        \left(h_w(x) - y_w \right)
+        \left(
+            \sigma
+            \left(  
+                \alpha_{0 v} +
+                \sum_{i=1}^d \alpha_{i v}x_i
+            \right)
+        \right).
+    \end{align}
+  }
+\end{frame}
+
+\begin{frame}
+  \frametitle{Derivative with respect to $\alpha_{0 v}$ st $v \in \{1, \ldots, n\}$}
+  {\tiny 
+  \begin{align} \label{eq:parcial_alpha_cero}
+        \frac{\partial E(h)}{\partial \alpha_{0 v}} 
+        = &
+        \frac{\partial}{\partial \alpha_{0 v}}
+        \left[
+            \frac{1}{2}
+            \sum_{(x,y) \in \mathcal{D}}
+            \sum_{k = 1}^s 
+            \left(h_k(x) - y\right)^2
+        \right]
+        \\ % primer paso regla de la cadena
+        = &
+        \frac{1}{2}
+        \sum_{(x,y) \in \mathcal{D}}
+        \sum_{k = 1}^s 
+        2 \left(h_k(x) - y_k \right)
+        \frac{\partial h_k(x)}{\partial \alpha_{0 v}} 
+        \\ 
+        = & % desarrollamos h
+        \sum_{(x,y) \in \mathcal{D}}
+        \sum_{k = 1}^s 
+        \left(h_k(x) - y_k \right)
+        \frac{\partial}{\partial \alpha_{0 v}} 
+        \left[
+            \sum_{j = 1}^n 
+                \beta_{j k}
+                \sigma
+                \left(  
+                    \alpha_{0 j} +
+                    \sum_{i=1}^d \alpha_{i j}x_i
+                \right)
+        \right] 
+        \\ 
+        = & % parcial de la suma es suma de parciales 
+        \sum_{(x,y) \in \mathcal{D}}
+        \sum_{k = 1}^s 
+        \left(h_k(x) - y_k \right)
+        \left(
+            \sum_{j = 1}^n 
+            \beta_{j k}
+            \frac{\partial}{\partial \alpha_{0 v}} 
+            \left[
+                \sigma
+                \left(  
+                    \alpha_{0 j} +
+                    \sum_{i=1}^d \alpha_{i j}x_i
+                \right)
+            \right]
+        \right) 
+        \\ 
+        = & %regla de la cadena 
+        \sum_{(x,y) \in \mathcal{D}}
+        \sum_{k = 1}^s 
+        \left(h_k(x) - y_k \right)
+        \left(
+            \sum_{j = 1}^n 
+            \beta_{j k}
+            \sigma '
+            \left(  
+                \alpha_{0 j} +
+                \sum_{i=1}^d \alpha_{i j}x_i
+            \right)
+            \frac{\partial}{\partial \alpha_{0 v}}    
+            \left[
+                \alpha_{0 j} +
+                \sum_{i=1}^d \alpha_{i j}x_i
+            \right]
+        \right) 
+        \\ 
+        = & % función característica
+        \sum_{(x,y) \in \mathcal{D}}
+        \sum_{k = 1}^s 
+        \left(h_k(x) - y_k \right)
+        \left(
+            \sum_{j = 1}^n 
+            \beta_{j k}
+            \sigma '
+            \left(  
+                \alpha_{0 j} +
+                \sum_{i=1}^d \alpha_{i j}x_i
+            \right)   
+            \chi_{[j = v]}
+        \right) 
+        \\ 
+        = & % Expresión final quitando términos nulos 
+        \sum_{(x,y) \in \mathcal{D}}
+        \sum_{k = 1}^s 
+        \left(h_k(x) - y_k \right)
+        \left(
+            \beta_{v k}
+            \sigma '
+            \left(  
+                \alpha_{0 v} +
+                \sum_{i=1}^d \alpha_{i v}x_i
+            \right)   
+        \right). 
+    \end{align}
+  }
+\end{frame}
+
+\begin{frame}
+  \frametitle{Derivative with respect $\alpha_{u v}$ st $u \in \{1, \ldots, d\}$ and $v \in \{1, \ldots, n\}$}
+
+  {\tiny
+  \begin{align} \label{eq:parcial_alpha_i}
+    \frac{\partial E(h)}{\partial \alpha_{u v}} 
+    =&
+    \frac{\partial}{\partial \alpha_{u v}}
+    \left[
+        \frac{1}{2}
+        \sum_{(x,y) \in \mathcal{D}}
+        \sum_{k = 1}^s 
+        \left(h_k(x) - y_k \right)^2
+    \right]
+    \\ % primer paso regla de la cadena
+    = &
+    \frac{1}{2}
+    \sum_{(x,y) \in \mathcal{D}}
+    \sum_{k = 1}^s 
+    2 \left(h_k(x) - y_k \right)
+    \frac{\partial h_k(x)}{\partial \alpha_{u v}} 
+    \\ 
+    = & % desarrollamos h
+    \sum_{(x,y) \in \mathcal{D}}
+    \sum_{k = 1}^s 
+    \left(h_k(x) - y_k \right)
+    \frac{\partial}{\partial \alpha_{u v}} 
+    \left[
+        \sum_{j = 1}^n 
+            \beta_{j k}
+            \sigma
+            \left(  
+                \alpha_{0 j} +
+                \sum_{i=1}^d \alpha_{i j}x_i
+            \right)
+    \right] 
+    \\ 
+    = & % parcial de la suma es suma de parciales 
+    \sum_{(x,y) \in \mathcal{D}}
+    \sum_{k = 1}^s 
+    \left(h_k(x) - y_k \right)
+    \left(
+        \sum_{j = 1}^n 
+        \beta_{j k}
+        \frac{\partial}{\partial \alpha_{u v}} 
+        \left[
+            \sigma
+            \left(  
+                \alpha_{0 j} +
+                \sum_{i=1}^d \alpha_{i j}x_i
+            \right)
+        \right]
+    \right) 
+    \\ 
+    = & %regla de la cadena 
+    \sum_{(x,y) \in \mathcal{D}}
+    \sum_{k = 1}^s 
+    \left(h_k(x) - y_k \right)
+    \left(
+        \sum_{j = 1}^n 
+        \beta_{j k}
+        \sigma '
+        \left(  
+            \alpha_{0 j} +
+            \sum_{i=1}^d \alpha_{i j}x_i
+        \right)
+        \frac{\partial}{\partial \alpha_{u v}}    
+        \left[
+            \alpha_{0 j} +
+            \sum_{i=1}^d \alpha_{i j}x_i
+        \right]
+    \right) 
+    \\ 
+    = & % función característica
+    \sum_{(x,y) \in \mathcal{D}}
+    \sum_{k = 1}^s 
+    \left(h_k(x) - y_k \right)
+    \left(
+        \sum_{j = 1}^n 
+        \beta_{j k}
+        \sigma '
+        \left(  
+            \alpha_{0 j} +
+            \sum_{i=1}^d \alpha_{i j}x_i
+        \right)   
+        \chi_{[i = u\wedge j = v]}x_i
+    \right) 
+    \\ 
+    = & % Expresión final quitando términos nulos 
+    \sum_{(x,y) \in \mathcal{D}}
+    \sum_{k = 1}^s 
+    \left(h_k(x) - y_k \right)
+    \left(
+        \beta_{v k}
+        \sigma '
+        \left(  
+            \alpha_{0 v} +
+            \sum_{i=1}^d \alpha_{i v}x_i
+        \right)x_u   
+    \right).
+\end{align}
+  }
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Summary}
+
+  {\tiny
+    \begin{align} 
+        \frac{\partial E(h)}{\partial \beta_{v w}} 
+        = & % Expresión final quitando términos nulos 
+        \sum_{(x,y) \in \mathcal{D}}
+        \left(h_w(x) - y_w \right)
+        \left(
+            \sigma
+            \left(  
+                \alpha_{0 v} +
+                \sum_{i=1}^d \alpha_{i v}x_i
+            \right)
+        \right).
+    \end{align}
+
+    
+    \begin{align} 
+        \frac{\partial E(h)}{\partial \alpha_{0 v}} 
+        =  % Expresión final quitando términos nulos 
+        \sum_{(x,y) \in \mathcal{D}}
+        \sum_{k = 1}^s 
+        \left(h_k(x) - y_k \right)
+        \left(
+            \beta_{v k}
+            \sigma '
+            \left(  
+                \alpha_{0 v} +
+                \sum_{i=1}^d \alpha_{i v}x_i
+            \right)   
+        \right). 
+    \end{align}
+
+    
+    \begin{align} 
+        \frac{\partial E(h)}{\partial \alpha_{u v}} 
+        =
+        \sum_{(x,y) \in \mathcal{D}}
+        \sum_{k = 1}^s 
+        \left(h_k(x) - y_k\right)
+        \left(
+            \beta_{v k}
+            \sigma '
+            \left(  
+                \alpha_{0 v} +
+                \sum_{i=1}^d \alpha_{i v}x_i
+            \right)x_u   
+        \right).
+    \end{align}
+  }
 
 \end{frame}
