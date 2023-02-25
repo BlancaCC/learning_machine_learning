@@ -1,0 +1,471 @@
+% Section name and highlighted ToC
+%\renewcommand{\sectiontitle}{Introduction}
+%\section{\sectiontitle}
+%\customToC{currentsection,hideothersubsections}{}
+
+% Section name and highlighted ToC
+%\renewcommand{\subsectiontitle}{What is machine learning?}
+%\subsection{\subsectiontitle}
+
+
+\begin{frame}{Overview}
+  \tableofcontents
+\end{frame}
+%%%% Work summary 
+\section{Improving learning}
+
+\begin{frame}
+  \frametitle{Gradient descent}
+
+  We start from a random $w_0$ and compute 
+
+  \begin{equation}
+    w_{k +1} 
+    = 
+    w_{k} - \rho_k \nabla_w e(w_k)
+  \end{equation}
+  
+  Considerations: 
+  \begin{itemize}
+    \item Subset or all the training data (\textit{batch},\textit{mini-batch} or \textit{online}). 
+    \item Learning rate tunning. 
+  \end{itemize}
+
+  Which is the best size? (see \cite{SmallBatchSize})
+\end{frame}
+
+\begin{frame}
+  \frametitle{Learning rate}
+  We want to ensure
+
+  \begin{equation}
+    e(w_{k+1}) < e(w_k)
+  \end{equation}
+
+  Line minimization
+  \begin{equation}
+    \rho_k^* 
+    =
+    arg min_\rho e(w_{k} - \rho_k \nabla_w e(w_k))
+  \end{equation}
+  
+  The GD methods are called first order methods. 
+\end{frame}
+
+\section{Newton's Method}
+\begin{frame}
+  \frametitle{Netwon's Methods}
+($q$ generalization of the error function). 
+  \begin{equation}
+    q(w)
+    = 
+    a w^2 + bw + c 
+  \end{equation}
+  with $a > 0$. 
+
+\begin{equation}
+  0 = q'(w + \Delta w)
+  = 
+  2a(w + \Delta w) + b.
+\end{equation}
+So $\Delta w = - \frac{2a + b}{2a}$.
+ \begin{equation}
+  w^* 
+  = 
+  w
+  - 
+  \frac{2aw + b}{2 a}
+  = w - \frac{1}{q''(w)} q(w).
+ \end{equation} 
+\end{frame}
+
+\begin{frame}
+  \frametitle{Newton's method}
+    \begin{equation}
+      w_{k+1}
+      = 
+      w^k 
+      - 
+      \rho_k 
+      \frac{1}{f''(w_k)}f'(w_k)
+    \end{equation}
+
+    Why we maintain the LR. 
+Considerations: 
+
+  \begin{itemize}
+    \item  $\frac{1}{f''(w_k)}$ acts as a self adjusting learning rate.
+    \item Parabola sharp $a >> 0$ overstep in GD but $f''(w_k)$ is also big. 
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Multidimensional Newton's Method}
+
+  Now $w \in \R^d$, the Taylor expansion of e at an optimum 
+  $w^* = w - \Delta$.
+
+  \begin{equation}
+    e(w)
+    \approx
+    e(w^* ) 
+    +
+    \nabla_w e(w^*) (w - w^*)
+    +
+     \frac{1}{2}
+     (w - w^*)^t
+     H(w^*)
+     (w - w^*).
+  \end{equation}
+
+  Since $\nabla_w e(w^*) = 0$ and using Taylor expansion again
+
+  \begin{equation}
+    \nabla e(w)
+    \approx
+    H(w^*) (w - w^*)
+  \end{equation}
+
+  \begin{equation}
+    w^* 
+    \approx
+    w
+    - H(w^*)^{-1} \nabla_w e(w^*)
+  = 
+  w
+    - H(w^*)^{-1} H(w^*) (w - w^*). 
+  \end{equation}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Gauss Newton Matrix}
+In a general case
+  \begin{equation}
+    \nabla e(w)
+    = 
+    E[
+      \nabla f(x|w)
+      (f(x|w) - y)
+    ]
+  \end{equation}
+
+
+  \begin{equation}
+    \nabla^2 e(w)
+    = 
+    E[
+      \nabla^2 f(x|w)
+      (f(x|w) - y)
+    ]
+    + 
+    E[
+      \nabla f(x|w)
+      \nabla f(x|w)^t
+    ]
+  \end{equation}
+$w \approx w^*$, $f(x|w) \approx y$,
+$f(x|w) - y \approx 0$.
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Gauss newton approximation }
+  \begin{equation}
+    H_{(i,j)(p,q)}(w)
+    =
+    \left(
+      \frac{\partial^2 e}{\partial w_{i j} \partial w_{p q}}(w)
+    \right)
+    \approx
+    \left(
+      E
+      \left[
+        \frac{\partial f}{\partial w_{p q}}
+        \frac{\partial f}{\partial w_{i j}}
+      \right]
+    \right)_{(i,j)(p,q)}
+  \end{equation}
+  \begin{itemize}
+    \item $H$ is Fisher's information matrix. 
+    \item J is semidefinite invertible. 
+    \item (Not necessary invertible).
+  \end{itemize}
+
+  Often its diagonal is consider.
+\end{frame}
+
+\begin{frame}
+  \frametitle{GN}
+Solve if no es invertible
+  
+
+\end{frame}
+    
+
+\begin{frame}
+  \frametitle{Levenberg Marquardt}
+
+  \begin{itemize}
+    \item Gradient descent away from $w^*$
+  \end{itemize}
+\end{frame}
+
+\section{Advanced Optimization}
+
+\subsection{Conjugate Gradient methods}
+
+\begin{frame}
+  \frametitle{Conjugate gradient methods}
+  See \cite{ConjugateGradientMethod}
+  \begin{itemize}
+    \item Iterative algorithm, form sparse systems. 
+    \item Can be as an example of the Gram Schmidt orthonormalization. 
+    \item Keep the previous directions. 
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Conjugate gradient methods}
+  Let f be quadratic function 
+  $f(x) = \frac{1}{2}x^T H x - x^t b$
+ with $H$ symmetric and positive definite. 
+
+ Starting guess $x_0$,
+ this means $p_0 = b - Ax_0$. 
+
+ Let $r_k$ be the residual
+ $r_k = b - Ax_k$
+
+ \begin{equation}
+  p_k = r_k - \sum_{i < k} \frac{p_i^T H r_l}{p_i H p_i}p_i.
+ \end{equation}
+ Following this direction the next optimal location 
+ is given by 
+\begin{equation}
+  x_{k+1}
+  =
+  x_k + \alpha p_k
+\end{equation} 
+with 
+\begin{equation}
+  \alpha
+  =
+  \frac{p_k^T (b - H x_k)}{p_k^T H p_k}.
+\end{equation}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Quasi Newton method}
+
+Methods to either find zeroes or local maxima and
+minima of function, as an alternative to 
+Newton's method. 
+
+The can be used if the Jacobian or Hessian is unavailable
+or to expensive to compute at every iteration. 
+
+The hessian approximation $B$ is chosen 
+to satisfy
+\begin{equation}
+  \nabla f(x + \Delta x)
+  = 
+  \nabla f(x ) + B \Delta x,
+\end{equation}
+which is called the secant equation. 
+
+There are plenty iterative formulas see
+\cite{Quasi-NewtonMethod}. 
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Limited memory Broyden Fletcher Goldfarb Shannon}
+  Using limited amount of computer memory. 
+
+  \cite{Limited-memoryBFGS}
+\end{frame}
+
+\section{Accelerating Gradient Descent}
+
+\subsection{Momentum}
+
+\begin{frame}
+  \frametitle{Momentum}
+
+  
+ Take previous state into consideration,
+ give gradient descent a short-term memory. 
+ 
+ $\Delta_k = w_k - w_{k-1}$
+
+ \begin{equation}
+  w_{k+1} 
+  =
+  w_k - \rho_k \Delta_w e(w_k) + \mu_k \Delta_k
+ \end{equation}
+
+ [Story about GD is a man walking down hill vs 
+ heavy ball down]
+
+ For further information see   \cite{WhyMomentumReallyWorks}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Rewriting momentum}
+
+  Defining: 
+
+\begin{equation}
+  \Delta_{k+1}
+  = 
+  - \rho_w e(w_k) + \mu_k \Delta_k 
+\end{equation}
+  
+Applying
+
+\begin{equation}
+  w_{k+1} = w_k + \Delta_{k+1}
+\end{equation}
+
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Nesterov's Accelerated Gradient}
+
+  Variant of momentum 
+
+
+  Defining: 
+
+  \begin{equation}
+    \tilde \Delta_{k+1}
+    = 
+    - \rho_w e(w_k + \mu_k \tilde \Delta_{k}  ) + \mu_k \tilde \Delta_{k} 
+  \end{equation}
+    
+  Applying
+  
+  \begin{equation}
+    w_{k+1} = w_k + \tilde \Delta_{k+1}
+  \end{equation}
+
+  \begin{itemize}
+    \item In convex optimization it improves GD.
+    \item Is often highly effective in Deep Network training. 
+  \end{itemize}
+  
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Adam}
+  From the article \cite{Adam}. 
+
+  \begin{itemize}
+    \item An algorithm for first-order gradient-based optimization of stochastic objective functions,
+    \item based on adaptive estimates of lower-order moments,
+    \item  computationally efficient, 
+    \item has little memory requirements, 
+    \item is invariant to diagonal rescaling of the gradients, 
+    \item and is well suited for problems that are large in terms of data and/or parameters.
+    \item The method is also appropriate for non-stationary objectives and problems with very noisy and/or sparse gradients. 
+    \item The hyper-parameters have intuitive interpretations and typically require little tuning.
+  \end{itemize}
+  
+\end{frame}
+
+\begin{frame}
+  \frametitle{Adam explanation}
+Each step $t$ Adam uses a new random mini- batch to 
+
+\begin{itemize}
+  \item Update exponential smoothen moments: 
+  \item compute estimator 
+  \item update weights
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Adam: moments}
+
+  \begin{equation}
+    m_t = \beta_1 m_{t-1} + (1 - \beta_1) g
+  \end{equation}
+  \begin{equation}
+    v_t = \beta_2 v_{t-1} + (1 - \beta_2) g^2
+  \end{equation}
+  where $v_0 = 0$ and $g^2$ indicates the elementwise square. 
+
+  \begin{equation}
+    v_t = (1 - \beta_2) \sum_{i = 1}^t \beta_2^{t-i} g_i^2
+  \end{equation}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Adam: Initialization bias correction}
+
+  \begin{align}
+    E[v_t] &= 
+    E \left[
+      (1 - \beta_2) \sum_{i = 1}^t \beta_2^{t-i} g_i^2
+    \right]
+    \\
+    & =  E[g_t^2] (1 - \beta_2) \sum_{i = 1}^t \beta_2^{t-i}  + \zeta
+    \\
+    & =  E[g_t^2] (1 - \beta_2^t) + \zeta.
+  \end{align}
+where $\zeta = 0$ is the true second moment  $E[g_i^2]$ is stationary; 
+
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Adam: Initialization bias correction}
+
+  Since we have 
+
+  \begin{equation}
+    E[m_t] \approx (1 - \beta_1^t) E[g_t];
+  \end{equation}
+
+  \begin{equation}
+    E[m_t] \approx (1 - \beta_2^t) E[g_t^2].
+  \end{equation}
+
+  We compute the bias corrections
+
+\begin{equation}
+  \hat{m}_t = \frac{m_t}{1 - \beta_1^t};
+\end{equation}
+
+\begin{equation}
+  \hat{v}_t = \frac{v_t}{1 - \beta_2^t}.
+\end{equation}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Adam: weights update}
+
+  \begin{equation}
+    W_t = W_{t-1} - \alpha \frac{\hat m_t}{ \sqrt{\hat v_t} + \epsilon}
+  \end{equation}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Understanding Adam}
+
+  \begin{itemize}
+    \item Default values $\alpha = 0.001$, $\beta_1 = 0.9$, $\beta_2 = 0.999$, $\epsilon = 10^{-8}$ usually work fine.
+    \item Interpretation as a normalized GD. 
+  \end{itemize}
+  
+
+\end{frame}

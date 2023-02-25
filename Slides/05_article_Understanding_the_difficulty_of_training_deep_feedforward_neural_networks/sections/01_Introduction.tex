@@ -1,0 +1,370 @@
+% Section name and highlighted ToC
+%\renewcommand{\sectiontitle}{Introduction}
+%\section{\sectiontitle}
+%\customToC{currentsection,hideothersubsections}{}
+
+% Section name and highlighted ToC
+%\renewcommand{\subsectiontitle}{What is machine learning?}
+%\subsection{\subsectiontitle}
+
+
+\begin{frame}{Overview}
+  \tableofcontents
+\end{frame}
+%%%% Work summary 
+\section{Article data}
+
+\begin{frame}
+    \frametitle{Understanding the difficulty of training deep feedforward neural networks}
+      \begin{itemize}
+        \item Authors: Xavier Glorot and Yoshua Bengio.
+        \item Publication year: 2010.
+        \item Conference: Proceedings of the thirteenth international conference on artificial intelligence and statistics.
+        \item Cited by: 19886 (I have found is quite a lot!) 
+      \end{itemize}
+      Reference: \cite{Understanding_the_difficulty_of_training_deep_feedforward_neural_networks}
+\end{frame}
+
+\section{Abstract}
+\begin{frame}
+  \frametitle{Abstract}
+
+  \textbf{Context}
+  \begin{itemize}
+    \item Before 2006 deep multilayer neural networks were not successfully trained. 
+    \item But after, by new initialization or training mechanisms experimental results showed the superiority of deeper vs less deep architectures. 
+  \end{itemize}
+
+  \textbf{Article objetive}
+  \begin{itemize}
+    \item Understand why standard gradient descent from random initialization is doing so poorly with deep neural networks. 
+  \end{itemize}
+
+  %\textbf{Motivation}
+ % \begin{itemize}
+  %  \item Design better algorithm. 
+  %\end{itemize}
+  
+\end{frame}
+    
+\begin{frame}
+  
+  \textbf{Experiments}
+  \begin{itemize}
+    \item Observe the influence of the non-linear activations functions:
+    \begin{itemize}
+      \item Logistic sigmoid activation is unsuited for deep networks for deep networks with random initialization due to its mean value, which can drive especially the \textbf{top hidden layer into saturation}. 
+      \item Saturated units can move out of saturation by themselves, albeit slowly (and explain the plateaus sometimes seen when training neural networks). 
+      \item Found a new non-linearity that saturares less can often be beneficial. 
+  \end{itemize}
+    \item They \textbf{study how activations and gradients vary across layers and during training}, with the idea that training may be more difficult when the singular values of the Jacobian associated with each layer are far from one. 
+    \item They proposed a new initialization scheme that brings substantially faster convergence. 
+  \end{itemize}
+  
+\end{frame}
+
+\section{Art state}
+
+\begin{frame}
+  \frametitle{Art state}
+
+\end{frame}
+
+\section{Experimental setting and Datasets}
+\begin{frame}
+  \frametitle{Experimental setting and Datasets}
+   \textbf{Online learning on a synthetic images dataset: \textbf{Shapeset- 3} $\times 2$ dataset.}
+  \begin{itemize}
+    \item Focus on optimization issues rather than on the small-sample regularization effects.
+    \item  The learner tries to predict which objects (parallelogram, triangle, or elipse) are presented, and one or two objects can be present yield into 9 possible classification.  
+  \end{itemize}
+
+  \begin{figure}[t]
+    \includegraphics[height=0.4\textheight]{05_Understanding_deep_learning/shapeset-3x2.png}
+    \centering
+\end{figure}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Finite Datasets}
+
+  \begin{itemize}
+    \item The MNIST digits. 
+    \begin{itemize}
+      \item 50,000 training images,
+      \item 10,000 validations images.
+    \end{itemize}
+    \item CIFAR-10 labeled subset of the tiny images. 
+    \begin{itemize}
+      \item 50,000 training images,
+      \item 10,000 validations images,
+      \item 10 classes corresponding to he main object:  airplane, au- tomobile, bird, cat, deer, dog, frog, horse, ship, or truck.
+      \item Classes are balanced. 
+    \end{itemize}
+
+    \item Small-ImageNet. 
+   \begin{itemize}
+      \item 90,000 training images,
+      \item 10,000 validations images,
+      \item 10 classes corresponding to he main object: reptiles, vehicles, birds, mammals, fish, furniture, instruments, tools, flowers and fruits.
+      \item Classes are balanced. 
+    \end{itemize}
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}
+  \begin{figure}
+    \centering
+    \begin{subfigure}[b]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{05_Understanding_deep_learning/MNIST.png}
+        \caption{MNIST}
+        \label{fig:y equals x}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{05_Understanding_deep_learning/CIFAR-10.png}
+        \caption{CIFAR-10}
+        \label{fig:three sin x}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{05_Understanding_deep_learning/small-ImageNet.png}
+        \caption{Small-ImageNet}
+        \label{fig:five over x}
+    \end{subfigure}
+       \caption{Three simple graphs}
+       \label{fig:three graphs}
+\end{figure}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Experimental Setting}
+  \begin{itemize}
+    \item They optimized feedforward neural networks: 
+    \begin{itemize}
+      \item With one to five hidden layers. 
+      \item One thousand hidden units per layer. 
+      \item Softmax logistic regression for the output. 
+    \end{itemize}
+    \item Cost function is the negative log-likelihood: 
+    \begin{equation}
+      - \log P(y|x),
+    \end{equation}
+    where $(x,y)$ is the (input image, target class). 
+    \item NN optimized with stochastic back-propagation on mini-batches of size ten. 
+    \item Learning rate is a hyperparameter that is optimized based on validation set error after a large number of updates (5 million). 
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Experimental setting}
+
+  \begin{itemize}
+    \item The non-linear activation functions in the hidden layers varied on: 
+    \begin{itemize}
+      \item The sigmoid
+      \item the hyperbolic tangent,
+      \item the \textit{newly proposed} softsign: 
+      \begin{equation}
+        \frac{x}{1 + |x|}
+      \end{equation}
+    \end{itemize}
+  \end{itemize}
+
+  \begin{figure}[t]
+    \includegraphics[height=0.4\textheight]{05_Understanding_deep_learning/softsign.png}
+    \centering
+\end{figure}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Experimental setting}
+
+  \begin{itemize}
+    \item They search for the best hyperparameters (learning rate and depth) separately for each model. 
+    \item Initialization: 
+    \begin{itemize}
+      \item Biases to 0,
+      \item the weight $W_{i j}$ at each layer with the following commonly used heuristic 
+      \begin{equation}
+        W_{i j} \sim U \left( - \frac{1}{\sqrt{n}}, \frac{1}{\sqrt{n}}\right), 
+      \end{equation}
+      where $U$ is the uniform distribution and $n$ the size of the previous layer. 
+    \end{itemize}
+  \end{itemize}
+
+\end{frame}
+
+\section{Effect of Activation Functions and Saturation During Training}
+
+\begin{frame}
+  \frametitle{Avoidable things}
+\begin{itemize}
+  \item Excessive saturation of activation functions (affects gradient propagation). 
+  \item Overlay linear units  (will not compute something interesting).
+\end{itemize}
+\end{frame}
+
+\subsection{Experiments with the Sigmoid}
+\begin{frame}
+  \frametitle{Experiments with the Sigmoid}
+
+    The sigmoid non-linearity has symptomatic behaviour.
+    
+    \begin{itemize}
+      \item Its none-zero mean that induces import singular values in the Hessian. 
+      \item Saturation levels. 
+    \end{itemize} 
+
+    \textbf{Experiments considerations}
+
+    \begin{itemize}
+      \item looking at the evolution of activations during training on the Shapeset-3 x 2 data.
+      
+      \item  Figure \ref{fig:saturation-sigmoid-shapeset3x2} shows the evolution of the activation values (after the non- linearity) at each hidden layer during training of a deep architecture with sigmoid activation functions. 
+      
+      \item Layer 1 refers to the output of first hidden layer, and there are four hidden layers. 
+      
+      \item The graph shows the means and standard deviations of these activations. 
+      
+      \item These statistics along with histograms are computed at different times during learning, by looking at activation values for a fixed set of 300 test examples. 
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Evolution ot the activations during training}
+% imgs/05_Understanding_deep_learning/saturation_sigmoid.png
+\begin{figure}[t]
+  \centering
+  \includegraphics[height=0.6\textheight]{05_Understanding_deep_learning/saturation_sigmoid.png}
+  \caption{Mean and standard deviation (vertical bars) of the activation values (output of the sigmoid) during supervised learning, for the different hidden layers of a deep architecture. The top hidden layer quickly saturates at 0 (slow- ing down all learning), but then slowly desaturates around epoch 100.}
+  \label{fig:saturation-sigmoid-shapeset3x2}
+\end{figure}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Observation}
+
+  \begin{itemize}
+    \item We see that very quickly at the beginning, all the sigmoid activation values of the last hidden layer are pushed to their lower saturation value of 0.
+    
+    \item the others layers have a mean activation value that is above 0.5, and decreasing as we go from the output layer to the input layer. 
+    
+    \item This kind of saturation can last very long in deeper networks with sigmoid activations, e.g., the depth-five model never escaped this regime during training. 
+    
+    \item The big surprise is that for intermediate number of hidden layers (here four), the saturation regime may be escaped. 
+    
+    \item The top hidden layer moves out of saturation, the first hidden layer begins to saturate and therefore to stabilize.
+
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Hypothesis}
+
+  \begin{itemize}
+    \item This behavior is due to the combination of \textbf{random initialization} and the fact that an hidden \textbf{unit output of 0 corresponds to a saturated} sigmoid since  deep networks with sigmoids but initialized from unsupervised pre-training (e.g. from RBMs) do not suffer from this saturation behavior.
+    
+    \item  the lower layers of the randomly initialized network computes initially is not useful to the classification task, unlike the transformation obtained from unsupervised pre-training.
+    
+    \item The logistic layer output $softmax(b + W h)$ might initially rely more on its biases b (which are learned very quickly) than on the top hidden activations $h$ derived from the input image (because $h$ would vary in ways that are not predictive of $y$). 
+  \end{itemize}
+
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Hypothesis}
+
+  \begin{itemize}
+    \item Would the error gradient wold tend to push $Wh$ towards 0, which can be achieved by pushing $h$ towards $0$. 
+    
+    \item  Symmetric activation functions like the hyperbolic tangent and the softsign, sitting around 0 is good because it allows gradients to flow backwards.
+    
+    \item pushing the sigmoid outputs to 0 would bring them into a saturation regime which would prevent gradients to flow backward and prevent the lower layers from learning useful features. 
+    
+    \item Eventually but slowly, the lower layers move toward more useful features and the top hidden layer then moves out of the saturation regime. However that, even after this, the network moves into a solution that is of poorer quality 
+  \end{itemize}
+
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Test error during online training}
+
+  % imgs/05_Understanding_deep_learning/test_error_during_online_training.png
+  \begin{figure}[t]
+    \centering
+    \includegraphics[height=0.8\textheight]{05_Understanding_deep_learning/test_error_during_online_training.png}
+  \end{figure}
+\end{frame}
+
+
+\subsection{Experiments with the Hyperbolic tangent}
+
+\begin{frame}
+  \frametitle{Experiments with the Hyperbolic tangent}
+
+  \begin{itemize}
+    \item The hyperbolic tangent networks do not suffer from the kind of saturation behavior of the top hid- den layer observed with sigmoid networks, because of its symmetry around 0.
+    \item With the standard weight initialization, we observe a sequentially occurring saturation phenomenon starting with layer 1 and propagating up in the network, as illustrated in Figure 3. 
+    \item \textbf{Why this is happening remains to be understood.}
+
+  \end{itemize}
+
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Activation values for hiperbolic tangent and softsign}
+
+  % imgs/05_Understanding_deep_learning/distribution_of_activation_values_for_the_hyperbolic_and_soft_sign.png
+  \begin{figure}[t]
+    \centering
+    \includegraphics[height=0.5\textheight]{05_Understanding_deep_learning/distribution_of_activation_values_for_the_hyperbolic_and_soft_sign.png}
+    \caption{
+      Top:98 percentiles (markers alone) and standard deviation (solid lines with markers) of the distribution of the activation values for the hyperbolic tangent networks in the course of learning. We see the first hidden layer satu- rating first, then the second, etc. Bottom: 98 percentiles (markers alone) and standard deviation (solid lines with markers) of the distribution of activation values for the soft- sign during learning. Here the different layers saturate less and do so together.
+    }
+  \end{figure}
+
+\end{frame}
+
+\subsection{Experiments with the Softsign}
+
+
+\begin{frame}
+  \frametitle{Experiments with the Softsign}
+
+  \begin{itemize}
+    \item The softsign $x/(1+|x|)$ is similar to the hyperbolic tangent but might behave differently in terms of saturation because of its smoother asymptotes (polynomial instead of exponential). 
+    
+    \item We see on Figure 3 that the saturation does not occur one layer after the other like for the hyperbolic tangent. It is faster at the beginning and then slow, and all layers move together towards larger weights.
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Histogram of activation values at the end of the learning}
+% imgs/05_Understanding_deep_learning/activation_values_at_end_of_the_learning.png
+\begin{figure}[t]
+  \centering
+  \includegraphics[height=0.5\textheight]{05_Understanding_deep_learning/activation_values_at_end_of_the_learning.png}
+  \caption{
+    Activation values normalized histogram at the end of learning, averaged across units of the same layer and across 300 test examples. Top: activation function is hyperbolic tangent, we see important saturation of the lower layers. Bottom: activation function is softsign, we see many activation values around (-0.6,-0.8) and (0.6,0.8) where the units do not saturate but are non-linear.
+  }
+\end{figure}
+  
+\end{frame}
+
+\section{Studying Gradients and their Propagation}
+
+
+    
