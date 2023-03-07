@@ -12,7 +12,7 @@
   \tableofcontents
 \end{frame}
 %%%% Work summary 
-\section{Article data}
+\section{Article information}
 
 \begin{frame}
     \frametitle{Understanding the difficulty of training deep feedforward neural networks}
@@ -63,12 +63,6 @@
   
 \end{frame}
 
-\section{Art state}
-
-\begin{frame}
-  \frametitle{Art state}
-
-\end{frame}
 
 \section{Experimental setting and Datasets}
 \begin{frame}
@@ -140,6 +134,23 @@
        \caption{Three simple graphs}
        \label{fig:three graphs}
 \end{figure}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Some observations}
+\begin{itemize}
+  \item Only classification??
+  \item Obsolete architecture. 
+  \item What about convolutional  neuronal networks.
+  \item And LTSM?
+\end{itemize}
+
+Some updated articles: 
+
+See \cite{StudyingTheEvolutionofNeuralActivationPatternsDuringTrainingofFeed-ForwardReLUNetworks}
+and its art state. 
+
+
 \end{frame}
 
 \begin{frame}
@@ -243,19 +254,19 @@
 \begin{figure}[t]
   \centering
   \includegraphics[height=0.6\textheight]{05_Understanding_deep_learning/saturation_sigmoid.png}
-  \caption{Mean and standard deviation (vertical bars) of the activation values (output of the sigmoid) during supervised learning, for the different hidden layers of a deep architecture. The top hidden layer quickly saturates at 0 (slow- ing down all learning), but then slowly desaturates around epoch 100.}
+  \caption{Mean and standard deviation (vertical bars) of the activation values (output of the sigmoid) during supervised learning, for the different hidden layers of a deep architecture. The top hidden layer quickly saturates at 0 (slowing down all learning), but then slowly desaturates around epoch 100.}
   \label{fig:saturation-sigmoid-shapeset3x2}
 \end{figure}
 
 \end{frame}
 
 \begin{frame}
-  \frametitle{Observation}
+  \frametitle{Observations}
 
   \begin{itemize}
     \item We see that very quickly at the beginning, all the sigmoid activation values of the last hidden layer are pushed to their lower saturation value of 0.
     
-    \item the others layers have a mean activation value that is above 0.5, and decreasing as we go from the output layer to the input layer. 
+    \item The others layers have a mean activation value that is above 0.5, and decreasing as we go from the output layer to the input layer. 
     
     \item This kind of saturation can last very long in deeper networks with sigmoid activations, e.g., the depth-five model never escaped this regime during training. 
     
@@ -268,12 +279,13 @@
 \end{frame}
 
 \begin{frame}
-  \frametitle{Hypothesis}
+  \frametitle{Hypothesis I}
 
   \begin{itemize}
     \item This behavior is due to the combination of \textbf{random initialization} and the fact that an hidden \textbf{unit output of 0 corresponds to a saturated} sigmoid since  deep networks with sigmoids but initialized from unsupervised pre-training (e.g. from RBMs) do not suffer from this saturation behavior.
+    \textbf{(And what about ReLu now?)}
     
-    \item  the lower layers of the randomly initialized network computes initially is not useful to the classification task, unlike the transformation obtained from unsupervised pre-training.
+    \item  The lower layers of the randomly initialized network computes initially is not useful to the classification task, unlike the transformation obtained from unsupervised pre-training.
     
     \item The logistic layer output $softmax(b + W h)$ might initially rely more on its biases b (which are learned very quickly) than on the top hidden activations $h$ derived from the input image (because $h$ would vary in ways that are not predictive of $y$). 
   \end{itemize}
@@ -282,16 +294,16 @@
 
 
 \begin{frame}
-  \frametitle{Hypothesis}
+  \frametitle{Hypothesis II}
 
   \begin{itemize}
     \item Would the error gradient wold tend to push $Wh$ towards 0, which can be achieved by pushing $h$ towards $0$. 
     
     \item  Symmetric activation functions like the hyperbolic tangent and the softsign, sitting around 0 is good because it allows gradients to flow backwards.
     
-    \item pushing the sigmoid outputs to 0 would bring them into a saturation regime which would prevent gradients to flow backward and prevent the lower layers from learning useful features. 
+    \item Pushing the sigmoid outputs to 0 would bring them into a saturation regime which would prevent gradients to flow backward and prevent the lower layers from learning useful features. 
     
-    \item Eventually but slowly, the lower layers move toward more useful features and the top hidden layer then moves out of the saturation regime. However that, even after this, the network moves into a solution that is of poorer quality 
+    \item Eventually but slowly, the lower layers move toward more useful features and the top hidden layer then moves out of the saturation regime. However that, even after this, the network moves into a solution that is of poorer quality. 
   \end{itemize}
 
 \end{frame}
@@ -314,7 +326,7 @@
   \frametitle{Experiments with the Hyperbolic tangent}
 
   \begin{itemize}
-    \item The hyperbolic tangent networks do not suffer from the kind of saturation behavior of the top hid- den layer observed with sigmoid networks, because of its symmetry around 0.
+    \item The hyperbolic tangent networks do not suffer from the kind of saturation behavior of the top hidden layer observed with sigmoid networks, because of its symmetry around 0.
     \item With the standard weight initialization, we observe a sequentially occurring saturation phenomenon starting with layer 1 and propagating up in the network, as illustrated in Figure 3. 
     \item \textbf{Why this is happening remains to be understood.}
 
@@ -331,7 +343,7 @@
     \centering
     \includegraphics[height=0.5\textheight]{05_Understanding_deep_learning/distribution_of_activation_values_for_the_hyperbolic_and_soft_sign.png}
     \caption{
-      Top:98 percentiles (markers alone) and standard deviation (solid lines with markers) of the distribution of the activation values for the hyperbolic tangent networks in the course of learning. We see the first hidden layer satu- rating first, then the second, etc. Bottom: 98 percentiles (markers alone) and standard deviation (solid lines with markers) of the distribution of activation values for the soft- sign during learning. Here the different layers saturate less and do so together.
+      Top:98 percentiles (markers alone) and standard deviation (solid lines with markers) of the distribution of the activation values for the hyperbolic tangent networks in the course of learning. We see the first hidden layer saturating first, then the second, etc. Bottom: 98 percentiles (markers alone) and standard deviation (solid lines with markers) of the distribution of activation values for the softsign during learning. Here the different layers saturate less and do so together.
     }
   \end{figure}
 
@@ -364,7 +376,510 @@
   
 \end{frame}
 
+\begin{frame}
+  \frametitle{Query}
+
+  \begin{center}
+  \Huge
+  Why are ReLU good?
+\end{center}
+
+\end{frame}
+
 \section{Studying Gradients and their Propagation}
+
+\begin{frame}
+  \frametitle{Effect of the Cost Function}
+
+  The logistic regression function 
+  \begin{equation}
+    - \log P(y | x)
+  \end{equation}
+  coupled with softmax output worked much better for classification problems since the 
+  plateaus in the training criterios are less present with the log-likelihood cost function. 
+
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{}
+  \begin{figure}[t]
+    \centering
+    \includegraphics[height=0.5\textheight]{05_Understanding_deep_learning/cross_entropy.png}
+    \caption{
+      Cross entropy (black, surface on top) and quadratic (red, bottom surface) cost as a function of two weights (one at each layer) of a network with two layers, W1 respectively on the first layer and W2 on the second, output layer.
+    }
+  \end{figure}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Some question about this statement}
+
+  \begin{itemize}
+    \item How the find this result? By computing gradients of a data set? ...
+    
+    \item There are any math proof? 
+  \end{itemize}
+
+\end{frame}
+
+\subsection{Gradients at initialization}
+
+\subsubsection{Theoretical Considerations and a New Normalized Initialization}
+\begin{frame}
+  \frametitle{Theoretical Considerations and a New Normalized Initialization}
+  Brandley: 
+  \begin{itemize}
+    \item Back propagated gradients were smaller as one moves from the output layer towards the input layer.
+    \item With linear activation at each layer, the variance of the back propagated gradients decreases as we go backward in the network. 
+  \end{itemize}
+
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{For dense neural neworks}
+
+  We are going to use linear symmetric activation functions $f$ with unit derivative at 0. 
+
+  (What about reLU? Still true this result?)
+
+  \textbf{Mathematical model: }
+  \begin{itemize}
+    \item Activation vector of layer $i$ is $z^i$. 
+    \item The argument vector of the activation function at layer $s^i$. 
+  \end{itemize}
+
+  \begin{align}
+    s^i & = z^i W^i + b^i \\
+    z^{i+1} & = f(s^i). 
+  \end{align}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Backpropagation }
+  The error function of the neural network $h$ is $Cost(h)$ so: 
+
+  \begin{equation}
+    \label{eq:partial_cost_wrt_s}
+    \frac{\partial Cost }{\partial s^i_k}
+    = 
+    f'(s_k^i) W_{k, *}^{i+1} 
+    \frac{\partial Cost }{\partial s^{i+1}},
+  \end{equation}
+
+  \begin{equation}
+    \label{eq:partial_cost_wrt_w}
+    \frac{\partial Cost }{\partial w^i_{l,k}}
+    = 
+    z^i_l \frac{\partial Cost }{\partial s^i_k}. 
+  \end{equation}
+  
+\end{frame}
+
+\begin{frame}
+  \frametitle{Variance}
+  \begin{itemize}
+    \item The variance will be expressed with respect to the input, output and weight initialization randomness. 
+    \item The weights are initialized independently. 
+    \item Input features variance ($var(x)$) are the same. 
+  \end{itemize}
+
+  \begin{equation}
+    f'(s^i_k) \approx 1. 
+  \end{equation}
+  Using  Taylor expansions for the moments of functions of random variables: 
+
+  \begin{equation} \label{eq:variance_of_a_function}
+    Var(f(X)) 
+    \approx 
+    \left(
+      f'\left( E[X]\right)
+    \right)^2
+    Var[X]
+  \end{equation}\footnote{See: \url{https://en.wikipedia.org/wiki/Variance} and \url{https://en.wikipedia.org/wiki/Taylor_expansions_for_the_moments_of_functions_of_random_variables}}
+  
+  Since $f'' = 0$ under our linearity assumption the approximation is equality. 
+\end{frame}
+
+\begin{frame}
+  \frametitle{Expressing the variance with respect to the input}
+
+  Hypothesis: 
+
+  \begin{itemize}
+    \item We are in a linear regime at the initialization. 
+    \item The weights are initialized independently.
+    \item The inputs features variances are the same. 
+  \end{itemize}
+
+  Let $x$ be the network input and $n_i$ the size of the layer $i$, 
+  \begin{equation}
+    f'(s^i_k) \approx 1,
+  \end{equation}
+
+  \begin{equation} \label{eq:variance_output}
+    Var \left[ z^i \right] 
+    =
+     Var[x] 
+     \prod_{j = 0}^{i - 1} n_j Var\left[ W^j \right] .
+  \end{equation}
+\end{frame}
+
+
+% \begin{frame}
+%   \frametitle{Proof of (\ref{eq:variance_output}) }
+
+
+% \begin{align}
+%   Var[z^i] &=   
+%     Var[f (s^{i-1})]
+%     \\
+%     & = 
+%     (f'(E[s^{i-1}]))^2
+%     Var[s^{i-1}]
+%     \\
+%     & =
+%     Var\left[
+%       W^{i - 1} z^{i-1} + b^{i-1}
+%     \right]
+%     \\
+%     & =
+%     Var\left[
+%       W^{i - 1} z^{i-1}
+%     \right]. 
+% \end{align}
+% \footnote{
+%   Use \ref{eq:variance_of_a_function}
+% }
+% \end{frame}
+
+\begin{frame}
+  \frametitle{Variace of a product}
+  Let $X,Y$ be independent random variables. 
+  \begin{align}
+    Var\left(X Y\right) 
+    = 
+    E[X]^2 Var[Y] + E[Y]^2 Var[X]  +  Var[X] Var[Y]. 
+  \end{align} 
+  
+
+  Under our assumptions: 
+
+  \begin{itemize}
+    \item $E[W] = 0$.
+    \item Abuse of notation:  $W$ and $x$ include bias and  $Var[W^j]$ 
+    for the share of all the weights at layer $j$. 
+    \item For an induction proof the \textbf{base case}:
+    \begin{equation}
+      \label{eq:base_case_induction}
+      Var\left[ z^0 \right]
+      = 
+      Var\left[ x \right]. 
+    \end{equation}
+  \end{itemize}
+
+
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Proof using induction I}
+
+    \textbf{ Hypotheses induction (\ref{eq:variance_output}) is true for i-1}
+
+    \begin{align}
+      Var[z^i] & =  
+    Var \left[
+      \sum_j f \left( s_j^{i-1} \right)
+    \right]
+    \\
+    & = 
+    n_{i - 1} Var \left[
+      f \left( W^{i-1} z^{i-1} \right)
+    \right]
+    \\
+    & = 
+    f' \left( W^{i-1} z^{i-1} \right)
+    Var \left[
+      W^{i-1} z^{i-1} 
+    \right]
+    \\
+    & = 
+    Var \left[
+      W^{i-1} z^{i-1} 
+    \right]
+    \\
+    & = 
+    E\left[ z^{i-1}\right]^2
+    Var \left[
+      W^{i-1} 
+    \right]
+    + 
+    E\left[ W^{i-1} \right]^2
+    Var \left[
+     z^{i-1} 
+    \right]
+    + 
+    Var \left[
+      W^{i-1} 
+    \right]
+    Var \left[
+      z^{i-1} 
+    \right]
+    \\
+    & = 
+    n_{i-1}
+    Var \left[
+      W^{i-1} 
+    \right]
+    Var \left[
+      z^{i-1} 
+    \right].
+    \end{align}
+    {\tiny
+    Note: $E\left[ z^{i}\right] = 0$ using second-order Taylor expansions and that $f$ is linear. 
+    }
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Variance of a the cost function}
+
+  For a network with $d$ layers, 
+
+  \begin{equation}
+    \label{eq:variance_partial_cost_wrt_s}
+    Var\left[
+      \frac{\partial Cost}{ \partial s^i}
+    \right]
+    = 
+    Var\left[
+      \frac{\partial Cost}{ \partial s^d}
+    \right]
+    \prod_{j = i}^{d} n_{j + 1} 
+      Var \left[ W^j\right]. 
+  \end{equation}
+  (Proof using \ref{eq:partial_cost_wrt_s})
+
+  \begin{equation}
+    Var\left[
+      \frac{\partial Cost}{ \partial w^i}
+    \right]
+    = 
+    \left(
+      \prod_{j = i}^{i - 1} n_{i } 
+        Var \left[ W^j\right]
+    \right)
+    \left(
+    \prod_{j = i}^{d - 1} n_{j+1} 
+      Var \left[ W^j\right]
+    \right)
+    \times
+    Var[x]
+    Var\left[
+      \frac{\partial Cost}{ \partial s^d}
+    \right].
+  \end{equation}
+  (Proof using \ref{eq:partial_cost_wrt_w} and
+  \ref{eq:variance_partial_cost_wrt_s}).
+\end{frame}
+
+\begin{frame}
+  \frametitle{Desirable variances}
+
+    \begin{itemize}
+      \item For forward propagation point of view, to keep information flowing we would like that 
+      \begin{equation}
+        \label{eq:first_desirable_condition}
+        \forall i, j \quad Var\left[z^i\right] = Var\left[z^j\right]. 
+      \end{equation}
+      \item From a back propagation point of view we would like to have:
+      \begin{equation}
+        \label{eq:second_desirable_condition}
+        \forall i, j \quad
+        Var\left[
+      \frac{\partial Cost}{ \partial s^i}
+    \right]
+    = 
+    Var\left[
+      \frac{\partial Cost}{ \partial s^j}
+    \right]. 
+      \end{equation}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Requirements for achieve desirable variance}
+
+  Using \ref{eq:variance_output} and \ref{eq:base_case_induction} condition \ref{eq:first_desirable_condition} is equivalent to 
+
+  \begin{equation}
+    \label{eq:first_equivalence}
+    \forall i, \quad n_i Var\left[W^i\right] = 1.
+  \end{equation}
+
+  Using \ref{eq:variance_partial_cost_wrt_s} condition \ref{eq:second_desirable_condition} is equivalent to 
+
+  \begin{equation}
+    \label{eq:second_equivalence}
+    \forall i, \quad n_{i+1} Var\left[W^i\right] = 1.
+  \end{equation}
+
+
+Both constraints are satisfied when all layers have the same width. 
+
+  As a compromise between \ref{eq:first_equivalence} and 
+  \ref{eq:second_desirable_condition}constraints, we might want to have 
+  \begin{equation}
+    \forall i \quad, 
+    Var \left[
+      W^i
+    \right]
+    = 
+    \frac{2}{n_i + n_{i+1}}. 
+  \end{equation}
+\end{frame}
+
+\begin{frame}
+  \frametitle{The varianze of the backpropagation gradient might vanish or explode in deeper networks}
+
+If 
+\begin{equation}
+  \forall i, j \quad Var\left[W^i\right] = Var\left[W^j\right]
+\end{equation}
+substituting on \ref{eq:variance_partial_cost_wrt_s}
+we obtain 
+\begin{equation}
+  \forall i,
+Var\left[
+  \frac{\partial Cost}{ \partial s^i}
+\right]
+= 
+\left[
+  n Var[W]
+\right]^{d-i}
+Var[x]
+\end{equation}
+
+% TODO
+
+% Notas 
+\begin{equation}
+  \forall i, 
+  Var\left[
+  \frac{\partial Cost}{ \partial w^i}
+\right]
+= 
+\left[
+  n Var[W]
+\right]^{d}
+Var[x]
+Var\left[
+  \frac{\partial Cost}{ \partial s^d}
+\right].
+\end{equation}
+(Reminiscence of RNN see Bengio et al., 1994)
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Variance of the experiments}
+
+  \begin{equation}
+    Var[W] = \frac{1}{n3},
+  \end{equation}
+  where $n$ is the layer size 
+  and this causes the variance of the back propagated gradient
+  to be dependent on the layer and decreasing. 
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Initialization procedure: Normalized initialization}
+
+  suggest the following initialization procedure to approximately satisfy our 
+  objectives of maintaining activation 
+  variances and back-propagated gradients 
+  variance as one moves up or down the 
+  network.
+
+  \begin{equation}
+    W \sim 
+    U \left[
+      - \frac{\sqrt{6}}{\sqrt{n_j + n_{j+1}}}
+      ,
+      \frac{\sqrt{6}}{\sqrt{n_j + n_{j+1}}}
+    \right].
+  \end{equation}
+
+  \textbf{This continuos being the trent?}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Other initialization techniques}
+  See \cite{WeightInitialization}
+
+  % imgs/05_Understanding_deep_learning/weight-initialization.png
+  
+  \begin{figure}[t]
+    \includegraphics[height=0.8\textheight]{05_Understanding_deep_learning/weight-initialization.png}
+    \centering
+\end{figure}
+\end{frame}
+
+\subsection{Empirical validation of the theoretical ideas}
+
+\begin{frame}
+  \frametitle{Gradient Propagation Study I}
+They  monitor the singular values of the Jacobian matrix associated with layer $i$:
+  
+\begin{equation}
+  J^i 
+  = 
+  \frac{\partial z^{i+1}}{\partial z^i}
+\end{equation}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Gradient Propagation Study II}
+
+  \begin{figure}[t]
+    \includegraphics[height=0.7\textheight]{05_Understanding_deep_learning/propagation-activation-values.png}
+    \caption{Activation values normalized histograms with hyperbolic tangent activation, with standard (top) vs normalized initialization (bottom). Top: 0-peak increases for higher layers.}
+    \centering
+\end{figure}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Gradients backpropagation Study }
+
+  \begin{figure}[t]
+    \includegraphics[height=0.6\textheight]{05_Understanding_deep_learning/backpropagation-gradients.png}
+    \caption{Back-propagated gradients normalized histograms with hyperbolic tangent activation, with standard (top) vs normalized (bottom) initialization. Top: 0-peak decreases for higher layers.}
+    \centering
+\end{figure}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Conclusion}
+
+  \begin{itemize}
+    \item Monitoring activations and gradients across layers and
+    training iterations is a powerful investigative tool for understanding training difficulties in deep nets.
+
+    \item Sigmoid activations (not symmetric around 0) should be avoided when initializing from small random weights, because they yield poor learning dynamics, with initial saturation of the top hidden layer.
+    \item Keeping the layer-to-layer transformations such that both activations and gradients flow well (i.e. with a Jacobian around 1) appears helpful, and allows to eliminate a good part of the discrepancy between purely supervised deep networks and ones pre-trained with unsupervised learning.
+    \item Many of our observations remain unexplained, suggesting further investigations to better understand gradients and training dynamics in deep architectures.
+
+  \end{itemize}
+
+\end{frame}
 
 
     
