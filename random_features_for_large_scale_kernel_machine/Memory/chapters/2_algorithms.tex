@@ -1,3 +1,139 @@
-\chapter{Algorithm}
-
+\chapter{Algorithms}
 % Derivación de los algoritmos de aprendizaje propuestos + pseudocódigo de dichos algoritmos.
+
+
+We are going to explore two sets of random features. 
+
+\section{Random Fourier Features}
+
+Let be $x \in \R^d$  (a column vector), the first set of random features consists of random 
+Fourier bases
+\begin{equation}
+    \cos(w^T x + b) 
+\end{equation}
+where $w \in \R^d$  and $b$ are random variables. 
+
+See that $T(x) = w^t x +b$ is affine transformation
+$T:\R^d \longrightarrow \R$  and then $\cos$ function maps
+$cos: \R  \longrightarrow S^1$. 
+
+The algorithm is defined as: 
+
+\begin{algorithm}[hbt!]
+    \caption{Random Fourier Features}\label{alg:two}
+    \KwData{$K$ a positive definite shift-invariant kernel $k(x,y) = k(x - y).$}
+    \KwResult{A randomized feature map $z(x): \R^d \longrightarrow \R^D$
+     so that $z(x)^T z(y) \approx k(x - y)$}
+
+     Compute the Fourier transform $p$ of the kernel $k$: 
+    \begin{equation}\label{eq:fourier_transformation}
+        p(w) = \frac{1}{2 \pi}
+        \int
+        e^{-jw^T \delta}k(\delta) 
+        d \Delta. 
+     \end{equation}
+        \\
+     Draw $D$ iid samples 
+     $w_1, \ldots, w_D \R^D$ from $p$ and
+     $D$ iid samples $b_1, \ldots, b_D \in \R$
+     from the uniform distribution on 
+     $[0, 2\pi]$. 
+     \\
+     Let 
+     \begin{equation}
+        z(x)
+        \equiv
+        \sqrt{\frac{2}{D}}
+        \left[ 
+            \cos(w_1^T x + b_1) 
+            \, 
+            \ldots
+            \cos(w_D^T x + b_D) 
+            \right]^T. 
+     \end{equation}
+    \end{algorithm}
+
+
+\subsection{Implementation considerations}
+
+In order to compute (\ref{eq:fourier_transformation})
+we have different alternatives: 
+
+\begin{itemize}
+    \item Use (\ref{eq:fourier_transformation}) and a numerical method to compute the integral (as Montecarlo). 
+    \item Use a library \textit{scipy Fourier Transforms}\footnote{
+        See \url{https://docs.scipy.org/doc/scipy/tutorial/fft.html} (last consult on 03-07-23).
+    }
+    \item Write explicitly its formula. 
+\end{itemize}
+
+For simplicity and since we use widely known kernels we are going to follow the third alternative. 
+The implementation of the kernel and its Fourier Transformation can be found at \texttt{/Code/random\_feature/kernels.py}. 
+
+\subsection{Some popular shift-invariant kernels and their Fourier transforms}
+
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{|c|c|c|}
+    \hline
+     Kernel name & $k(x-y)$ & p(w) \\
+     \hline
+     % Gaussian kernel 
+     Gaussian 
+     & $e^{- \frac{\| x- y\|^2_2}{2}}$
+    & 
+    $(2 \pi)^{-\frac{D}{2}} e^{- \frac{\| w\|^2_2}{2}}$ 
+    \\
+    \hline
+    \end{tabular}
+    \caption{Some popular shift-invariant kernels and their Fourier transforms}
+\end{table}
+
+\subsection*{How to draw example from a probability distribution $p$}
+
+Let $p : \R^d \longrightarrow \R$ a probability function. In order to draw samples from this distribution 
+we are going to use the following algorithm: 
+
+
+
+\begin{algorithm}[hbt!]
+    \caption{Generate example from a probability distribution }\label{alg:two}
+    \KwData{
+        \begin{itemize}
+            \item Probability density function $p : \R^d \longrightarrow \R$,
+            \item dimension of the output vectors $d$, 
+            \item number of vectors: $n$,
+            \item maximum absolute value of the coefficients of the vectors: $K$. 
+        \end{itemize}
+    }
+    \KwResult{
+        Radom variables: 
+        $\left\{w_1, \ldots, w_n\right\} \subset \R^d$ r
+        that are examples of $p$. 
+        }
+  
+        Let $\Lambda \gets \{\}$ be the solution. 
+        \\
+        \While{The size of $\Lambda$ is less than $n$}{
+            Let $w \gets U([-k, k]^d)$ \Comment*[r]{random vector of $d$ vector that follow a uniform distribution in $[-k, k]$ interval}
+            %
+            $$u \gets U([0,1])$$
+            %
+            \If{$u \leq p(w)$}{
+               $$
+               \Lambda \gets  \Lambda \cup \{w\}.
+               $$ 
+            }
+        }
+        \Return{$\Lambda$} 
+    \end{algorithm}
+
+
+
+
+
+\subsection{Convergence proof}
+
+
+
+
