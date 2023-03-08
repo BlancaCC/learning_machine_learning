@@ -19,12 +19,12 @@ def generate_random_vector(p:Callable, dimension:int, k:float  = 2)-> np.array:
     w: vector from p a density probability function 
     Example
     ----------
-    >>> from kernels import gaussian_fourier_tranform
+    >>> from kernels import gaussian_fourier_transform
     >>> import numpy as np
     >>> dimension = 4
     >>> k = 3
     >>> np.random.seed(1)
-    >>> generate_random_vector(gaussian_fourier_tranform, dimension, k)
+    >>> generate_random_vector(gaussian_fourier_transform, dimension, k)
     array([ 0.02026566,  0.16296105, -1.27152247,  0.07199538])
     '''
     while True: # 
@@ -50,13 +50,13 @@ def generate_random_examples(p:Callable, dimension:int, n_examples: int, k:float
 
     Example
     ----------
-    >>> from kernels import gaussian_fourier_tranform
+    >>> from kernels import gaussian_fourier_transform
     >>> import numpy as np
     >>> dimension = 4
     >>> n_examples = 5
     >>> k = 3
     >>> np.random.seed(1)
-    >>> W = generate_random_examples(gaussian_fourier_tranform, dimension, n_examples, k/2)
+    >>> W = generate_random_examples(gaussian_fourier_transform, dimension, n_examples, k/2)
     >>> W
     array([[ 0.46702057, -0.12688312,  1.03697172,  0.36090271],
            [ 0.10065235,  1.12209072,  0.31084176,  0.84494491],
