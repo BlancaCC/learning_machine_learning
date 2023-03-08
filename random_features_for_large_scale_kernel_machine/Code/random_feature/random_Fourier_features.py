@@ -38,6 +38,18 @@ def random_fourier_features(
     >>> x = np.array([1,2,1,4])
     >>> z(x)
     array([-0.87042363,  0.97120354])
+
+    Note
+    -----------
+    This implement the algorithm Random Fourier Features from the article: 
+    author = {Rahimi, Ali and Recht, Benjamin},
+    booktitle = {Advances in Neural Information Processing Systems},
+    editor = {J. Platt and D. Koller and Y. Singer and S. Roweis},
+    publisher = {Curran Associates, Inc.},
+    title = {Random Features for Large-Scale Kernel Machines},
+    url = {https://proceedings.neurips.cc/paper/2007/file/013a006f03dbc5392effeb8f18fda755-Paper.pdf},
+    volume = {20},
+    year = {2007}
     '''
     heuristic_k = 4/input_dimension
     W = generate_random_examples(fourier_transform, input_dimension, output_dimension, heuristic_k)
