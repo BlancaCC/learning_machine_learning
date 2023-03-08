@@ -27,7 +27,7 @@ def generate_random_vector(p:Callable, dimension:int, k:float  = 2)-> np.array:
     >>> generate_random_vector(gaussian_fourier_transform, dimension, k)
     array([ 0.02026566,  0.16296105, -1.27152247,  0.07199538])
     '''
-    while True: # 
+    while True: 
         w = np.random.uniform(-k, k, dimension)
         u = np.random.uniform(0,1,1)
         if u[0] <= p(w):
