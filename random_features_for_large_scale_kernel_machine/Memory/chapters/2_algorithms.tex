@@ -55,6 +55,7 @@ The algorithm is defined as:
 
 
 \subsection{Implementation considerations}
+\subsubsection{Fourier transformation}
 
 In order to compute (\ref{eq:fourier_transformation})
 we have different alternatives: 
@@ -70,26 +71,7 @@ we have different alternatives:
 For simplicity and since we use widely known kernels we are going to follow the third alternative. 
 The implementation of the kernel and its Fourier Transformation can be found at \texttt{/Code/random\_feature/kernels.py}. 
 
-\subsection{Some popular shift-invariant kernels and their Fourier transforms}
-
-\begin{table}[h!]
-    \centering
-    \begin{tabular}{|c|c|c|}
-    \hline
-     Kernel name & $k(x-y)$ & p(w) \\
-     \hline
-     % Gaussian kernel 
-     Gaussian 
-     & $e^{- \frac{\| x- y\|^2_2}{2}}$
-    & 
-    $(2 \pi)^{-\frac{D}{2}} e^{- \frac{\| w\|^2_2}{2}}$ 
-    \\
-    \hline
-    \end{tabular}
-    \caption{Some popular shift-invariant kernels and their Fourier transforms}
-\end{table}
-
-\subsection*{How to draw example from a probability distribution $p$}
+\subsubsection{How to draw example from a probability distribution $p$}
 
 Let $p : \R^d \longrightarrow \R$ a probability function. In order to draw samples from this distribution 
 we are going to use the following algorithm: 
@@ -128,6 +110,34 @@ we are going to use the following algorithm:
         \Return{$\Lambda$} 
     \end{algorithm}
 
+Ideally, $K$ should be as big as  possible. 
+However, the bigger $K$ is, the bigger the norm of the vectors $w$
+and the lower their probability. 
+
+If the probability of acceptance is too low, we would end up rejecting too many vectors, making the algorithm slow. Therefore, so we need to find a balance 
+between mathematical rigor and pragmatism choosing $k$. 
+
+This function is done at \texttt{random\_feature/random\_samples.py}. 
+
+
+\subsection{Some popular shift-invariant kernels and their Fourier transforms}
+
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{|c|c|c|}
+    \hline
+     Kernel name & $k(x-y)$ & p(w) \\
+     \hline
+     % Gaussian kernel 
+     Gaussian 
+     & $e^{- \frac{\| x- y\|^2_2}{2}}$
+    & 
+    $(2 \pi)^{-\frac{D}{2}} e^{- \frac{\| w\|^2_2}{2}}$ 
+    \\
+    \hline
+    \end{tabular}
+    \caption{Some popular shift-invariant kernels and their Fourier transforms}
+\end{table}
 
 
 
