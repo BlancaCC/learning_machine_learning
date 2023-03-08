@@ -140,10 +140,60 @@ This function is done at \texttt{random\_feature/random\_samples.py}.
 \end{table}
 
 
-
-
 \subsection{Convergence proof}
 
+Our objective is to proof that $z(x)^Tz(y)$ is close to $k(x-y)$. 
+Mathematically, we want to garante the uniform convergence of the Fourier Features. 
 
+% TODO add scheme of the proof
+
+\begin{theorem}[Bochner's theorem]
+    A continuos kernel $k(x,y) = k(x-y)$ on $\R^d$ is positive 
+    if and only if $k(\delta)$ is the Fourier transforme of a non-negative measure. 
+\end{theorem}
+
+If a shift-invariant kernel $k(\delta)$ is properly scaled, Bochner’s theorem guarantees that its Fourier transform 
+$p(w)$
+is a proper probability distribution.
+
+Defining $\zeta_w(x) = e^{jw^tx}$, we have
+
+\begin{equation}
+    \label{eq:bochnerTheorem}
+    k(x-y)
+    =
+    \int_{\R^d}
+    p(w)
+    e^{jw^t(x-y)}
+    dw
+    = 
+    E_w\left[
+        \zeta_w(x)
+        \zeta_w(y)^*
+    \right],
+\end{equation}
+where $\zeta_w(y)^* =  e^{- jw^tx}$ is the conjugate. 
+We have proof in (\ref{eq:bochnerTheorem}) that $  \zeta_w(x)
+\zeta_w(y)^*$ is a unbiased estimate of $k(x,y)$ when $w$ is drawn from $p$. 
+
+Notice that $p: \R^d \longrightarrow [0,1]$ is a real function, 
+and the $k(\Delta)$ is real too, so the integral (\ref{eq:bochnerTheorem})
+converges when $\zeta_w(x)
+\zeta_w(y)^*$ is real. By Euler's formula: 
+\begin{equation}
+    \zeta_w(\Delta) 
+    = 
+    e^{jw^T \Delta} 
+    = \cos \left(
+        -w^t\Delta
+    \right)
+    +
+    j \sin \left(
+        -w^t\Delta
+    \right)
+    = \cos \left(
+        w^t\Delta
+    \right).
+\end{equation}
 
 
