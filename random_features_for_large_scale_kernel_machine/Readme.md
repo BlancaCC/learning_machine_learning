@@ -17,7 +17,7 @@ Entender el análisis de convergencia realizado por los autores.
 Se debe entregar:
 
 Informe en pdf con los siguientes apartados:
-1. Introducción.
+1. In troducción.
 2. Derivación de los algoritmos de aprendizaje propuestos + pseudocódigo de dichos algoritmos.
 3. Experimentos realizados: Deben reproducir los resultados y gráficas de artículos.
 4. Análisis de la convergencia de los algoritmos (claims 1 and 2).

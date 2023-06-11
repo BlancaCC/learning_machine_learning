@@ -1,0 +1,194 @@
+% Section name and highlighted ToC
+%\renewcommand{\sectiontitle}{Introduction}
+%\section{\sectiontitle}
+%\customToC{currentsection,hideothersubsections}{}
+
+% Section name and highlighted ToC
+%\renewcommand{\subsectiontitle}{What is machine learning?}
+%\subsection{\subsectiontitle}
+
+
+\begin{frame}{Overview}
+  \tableofcontents
+\end{frame}
+%%%% Work summary 
+\section{Article information}
+\begin{frame}{Weighted Sums of Random Kitchen Sinks: Replacing
+  minimization with randomization in learning}
+  \begin{itemize}
+    \item Ali Rahimi and Recht
+    \item Year 2008
+    \item Cited by 720. 
+  \end{itemize}
+  \cite{NIPS2008_0efe3284}
+
+  \textbf{Objetive}
+  The main technical contributions of the paper are an approximation error bound (Lemma1),
+   and a synthesis of known techniques from learning theory to analyze random shallow networks.
+\end{frame}
+
+\begin{frame}
+  \frametitle{Learning for me and some observation}
+
+  \begin{itemize}
+    \item Generalization of the bound for several shallow  methods. 
+    \item Randomness in shallow architecture: What about depth ones?
+    \item The results are applicable only for binary classification problem. Could be properly generalized or this kind of method are more suitable for binary classification of only for classification. 
+  \end{itemize}
+
+  
+
+\end{frame}
+
+\section{Generalization}
+
+\begin{frame}
+  \frametitle{Introduction}
+
+ \textit{These randomized shallow networks have largely been superceded by optimally, or nearly
+ optimally, tuned shallow architectures such as weighted sums of positive definite kernels (as in
+ Support Vector Machines), or weigted sums of weak classifiers (as in Adaboost). But recently,
+ architectures that randomly transform their inputs have been resurfacing in the machine learning
+ community }
+
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Classification problem}
+
+  Consider the problem of fitting a function 
+  $f: X \longleftarrow \R$ to train a data set of $m$ input-output pairs
+  drawn iid from some unknown distribution $P(x,y)$ with $x \in X$ and 
+  $y \in \{-1,1\}$.
+
+  That minimizes the empirical risk: 
+
+  \begin{equation}
+    R_{emp[f]}
+    = 
+    \frac{1}{m} 
+    \sum^m_i c\left( f(x_i), y_i\right). 
+  \end{equation}
+
+  Where $c$ penalizes the deviation between the prediction $f$. 
+
+  \begin{itemize}
+    \item Hinge loss for SVM,
+    \item Exponential los in Adabosst, 
+    \item quadratic loss for Least squarest classification. 
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Form of $f$}
+
+  \begin{equation}
+    f(x)
+    =
+    \sum_{i = 1} ^\infty
+      \alpha(w_i) \phi(x; w_i),
+  \end{equation}
+  or
+  \begin{equation}
+    f(x)
+    =
+    \int
+      \alpha(w_i) \phi(x; w_i) dw
+  \end{equation}
+  here feature functions $\phi: X \Omega \longrightarrow \R$
+  parameterized by some vector $w \in \Omega$,   are weighted by a function 
+  $\alpha: \Omega \longrightarrow \R$. 
+
+  \begin{itemize}
+    \item Kernel machines $\phi$ are eigenfunctions of a positive kernel $k$, 
+    \item Adaboost: decision trees. 
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Objective: minimization}
+
+  \begin{equation}
+    \text{minimize}_{w_1, \ldots, w_k \in \Omega \quad \alpha}
+    R_{emp}\left[
+      \sum_k^K \phi(x; w_k) \alpha_k. 
+    \right]
+  \end{equation}
+  Idea: \textbf{Randomize over $w$ and minimize over $\alpha$}
+  Crucial selection: $p$ distribution from which $w$ are drawn.
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Algorithm}
+  \textbf{Algorithm 1: The Weighted Sum of Random Kitchen Sinks fitting procedure}
+
+  \textbf{Input:}
+  A dataset $\{x_i, y_i\}_{i=1}^m$ of $m$ points,
+  a bounded feature function $|\phi(x; w)| \leq 1$,
+  an integer $K$,
+  a scalar $C$,
+  and a probability distribution $p(w)$ on the parameters of $\phi$.
+  
+  \textbf{Output:}
+  A function $\hat{f}(x) = \sum_{k=1}^K \phi(x; w_k)\alpha_k$.
+  
+  1. Draw $w_1, \ldots, w_K$ independently and identically distributed from $p$.
+  2. Featurize the input: $z_i \leftarrow [\phi(x_i; w_1), \ldots, \phi(x_i; w_K)]^T$.
+  3. With $w$ fixed, solve the empirical risk minimization problem:
+  \[
+  \begin{aligned}
+  &\text{minimize} \quad \alpha \in \mathbb{R}^K \\
+  &\frac{1}{m} \sum_{i=1}^m c(\alpha^T z_i, y_i) \\
+  &\text{subject to} \quad \|\alpha\|_{\infty} \leq \frac{C}{K}
+  \end{aligned}
+  \]
+  
+
+\end{frame}
+
+\section{Theoretical results}
+\begin{frame}
+  \frametitle{Theoretical results}
+  Formally, we show that the Algorithm 1 returns a function that has low true risk. The true risk of a function $f$ is defined as:
+  
+  \begin{equation}
+    R[f] \equiv \mathbb{E}_{(x,y)\sim P} c(f(x), y),
+  \end{equation}
+  and measures the expected loss of $f$ on as-yet-unseen test points, assuming these test points are generated from the same distribution that generated the training data. The following theorem states that with very high probability, Algorithm 1 returns a function whose true risk is near the lowest true risk attainable by functions in the class $F_p$ defined below:
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Main theorem}
+
+  \textbf{Theorem 1 (Main Result).} Let $p$ be a distribution on $\Omega$, and let $\phi$ satisfy 
+  \begin{equation}
+    \sup_{x,w} |\phi(x; w)| \leq 1.
+  \end{equation}
+
+   Define the set
+
+\begin{equation}
+  F_p 
+  \equiv 
+  \left\{ 
+    f(x) = \int_\Omega \alpha(w)\phi(x; w) \, dw \, 
+    \middle| 
+    \, |\alpha(w)| \leq C p(w) \right\}. 
+\end{equation}
+
+Suppose $c(y, y') = c(yy')$, with $c(yy')$ being $L$-Lipschitz. Then, for any $\delta > 0$, if the training data $\{x_i, y_i\}_{i=1}^m$ are drawn independently and identically distributed (iid) from some distribution $P$, Algorithm 1 returns a function $\hat{f}$ that satisfies
+
+\begin{equation}
+  R[\hat{f}] - \min_{f \in F_p} R[f] 
+  \leq 
+  \mathcal{O}\left(\left(\frac{1}{\sqrt{m}} + \frac{1}{\sqrt{K}}\right)
+  LC\sqrt{\log\frac{1}{\delta}}\right), 
+\end{equation}
+with probability at least $1 - 2\delta$ over the training dataset and the choice of parameters $w_1, \ldots, w_K$.
+
+
+\end{frame}

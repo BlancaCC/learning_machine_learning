@@ -1,0 +1,654 @@
+% Section name and highlighted ToC
+%\renewcommand{\sectiontitle}{Introduction}
+%\section{\sectiontitle}
+%\customToC{currentsection,hideothersubsections}{}
+
+% Section name and highlighted ToC
+%\renewcommand{\subsectiontitle}{What is machine learning?}
+%\subsection{\subsectiontitle}
+
+
+\begin{frame}{Overview}
+  \tableofcontents
+\end{frame}
+%%%% Work summary 
+\section{Article information}
+\begin{frame}{Random Features for Large-Scale Kernel Machines}
+  \begin{itemize}
+    \item Ali Rahimi and Recht
+    \item Year 2007
+    \item Cited by 3784. 
+  \end{itemize}
+  \cite{Random_Features_for_Large-Scale_Kernel_Machines}
+
+  \textbf{Abstract}
+  To accelerate the training of kernel machines, we propose to \textbf{map the input data to a randomized low-dimensional feature space and then apply existing fast linear methods}. The features are designed so that the inner products of the transformed data are approximately equal to those in the feature space of a user specified shift- invariant kernel. We explore two sets of random features, provide convergence bounds on their ability to approximate various radial basis kernels, and show that in large-scale classification and regression tasks linear machine learning algorithms applied to these features outperform state-of-the-art large-scale kernel machines.
+\end{frame}
+
+\begin{frame}
+  \frametitle{Introduction}
+
+  Kernel support vector machine are universal approximators. 
+
+
+  \begin{itemize}
+    \item This result was first proved by Vladimir Vapnik and Alexey Chervonenkis in their paper "On the uniform convergence of relative frequencies of events to their probabilities" published in 1971. \cite{vapnik1971uniform}.
+    \item The universality of kernel SVMs was later proved by Bernhard Schölkopf and Alexander J. Smola in their influential book "Learning with Kernels: Support Vector Machines, Regularization, Optimization, and Beyond" published in 2002. In chapter 8 of the book, they prove that under certain conditions, a kernel \textbf{SVM can approximate any continuous function to arbitrary accuracy}, making it a universal approximator. \cite{schoelkopf2002learning}
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{On the Equivalence between Neural Network and Support Vector Machine}
+\cite{chen2021on}
+We prove the equivalence of infinitely wide neural network with support vector machine and other kinds of $\ell_2$ regularized kernel machines.
+
+
+  {\tiny
+\textbf{Abstract}: Recent research shows that the dynamics of an infinitely wide neural network (NN) trained by gradient descent can be characterized by Neural Tangent Kernel (NTK). Under the squared loss, the infinite-width NN trained by gradient descent with an infinitely small learning rate is equivalent to kernel regression with NTK. However, the equivalence is only known for ridge regression currently , while the equivalence between NN and other kernel machines (KMs), e.g. support vector machine (SVM), remains unknown. Therefore, in this work, we propose to establish the equivalence between NN and SVM, and specifically, the infinitely wide NN trained by soft margin loss and the standard soft margin SVM with NTK trained by subgradient descent. Our main theoretical results include establishing the equivalence between NN and a broad family of $\ell_2$ regularized KMs with finite-width bounds, which cannot be handled by prior work, and showing that every finite-width NN trained by such regularized loss functions is approximately a KM. Furthermore, we demonstrate our theory can enable three practical applications, including (i) \textit{non-vacuous} generalization bound of NN via the corresponding KM; (ii) \textit{nontrivial} robustness certificate for the infinite-width NN (while existing robustness verification methods would provide vacuous bounds); (iii) intrinsically more robust infinite-width NNs than those from previous kernel regression.
+  }
+\end{frame}
+
+\section{Introduction}
+\begin{frame}
+  \frametitle{Kernel matrix scale poorly}
+
+  If we have a set of training samples ${\mathbf{x}_1, \mathbf{x}_2, \dots, \mathbf{x}_n}$ and a kernel function $k(\cdot, \cdot)$, then the Gram matrix $\mathbf{K}$ is defined as:
+  \begin{equation}
+    K_{i,j} = k(x_i, x_j),
+  \end{equation}
+  where the  $(i,j)$-th element of $K$ a $n \times n$ symmetric positive semi-definite matrix. 
+
+  Given any positive definite function $k(\mathbf{x},\mathbf{y})$ with $\mathbf{x},\mathbf{y}\in\mathbb{R}^d$, there exists an inner product and a lifting $\phi$ such that the inner product between lifted data points can be quickly computed as $\langle \phi(\mathbf{x}), \phi(\mathbf{y})\rangle = k(\mathbf{x},\mathbf{y})$.
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Fundamental theorem of Galois theory}
+ \cite{wiki:Fundamental_theorem_of_Galois_theory}
+  The theorem that guarantees the existence of a lifting in the kernel trick is the Fundamental theorem of Galois theorry. This theorem states that given a finite group $G$, a field $K$, and a Galois extension $L$ of $K$ with Galois group $Gal(L/K) \cong G$, for every subgroup $H \subseteq G$, there exists a Galois extension $M$ of $K$ such that $Gal(M/K) \cong H$, and furthermore, $M$ is an extension of $L$.
+
+In the context of the kernel trick, this means that if we want to solve a system of equations using the kernel trick, and the system of equations can be expressed as the kernel of a group homomorphism $\phi: G \rightarrow H$, then we can find a solution to the system of equations in the subgroup $Ker(\phi)$ of $G$ if we find a Galois extension $L$ of $K$ such that $Gal(L/K) \cong G$ and $L$ contains all the roots of the polynomial that defines $H$ over $K$. The Galois lifting theorem guarantees that such a Galois extension $L$ exists, which means we can solve the system of equations using the kernel trick.
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Kernel Trick}
+  The kernel trick is a technique used in machine learning and kernel methods to implicitly map the input data into a higher-dimensional feature space without actually computing the mapping explicitly.
+
+  Instead of computing the mapping explicitly, we can define a kernel function $k(\cdot,\cdot)$ that computes the inner product between the feature vectors in the higher-dimensional space. Specifically, given two input points $\mathbf{x}_i$ and $\mathbf{x}_j$, we can define the kernel function as:
+
+  \begin{equation}
+    k(x_i, x_j) 
+    = 
+    < \phi(x_i), \phi(x_j)>
+  \end{equation}
+  
+\end{frame}
+
+\begin{frame}
+  \frametitle{Article improvement}
+
+  \begin{itemize}
+    \item Given a set of input data points ${\mathbf{x}_1,\mathbf{x}_2,\ldots,\mathbf{x}_n}$ in a low-dimensional space, a lifting $\phi:\mathbb{R}^d\rightarrow\mathbb{R}^K$ maps each input point $\mathbf{x}_i$ to a higher-dimensional feature vector $\phi(\mathbf{x}_i)\in\mathbb{R}^K$. The lifted feature vectors can then be used as input to a learning algorithm that operates in the higher-dimensional space.
+    \item they propose explicitly mapping the data to a low-dimensional Euclidean inner product space using a randomized feature map $z:\mathbb{R}^d\rightarrow\mathbb{R}^D$ so that the inner product between a pair of transformed points approximates their kernel evaluation:
+  \end{itemize}
+
+  \begin{equation}
+    k(\mathbf{x},\mathbf{y}) = \langle \phi(\mathbf{x}), \phi(\mathbf{y}) \rangle \approx z(\mathbf{x})^\prime z(\mathbf{y}). 
+    \end{equation}
+
+    \begin{equation}
+      D << K
+    \end{equation}
+    In what follows, they show how to construct feature spaces that uniformly approximate popular shift-invariant kernels $k(\mathbf{x}-\mathbf{y})$ to within $\epsilon$ with only $D = O(d\epsilon^{-2}\log^{1/\epsilon})$.
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Optimized}
+
+  With the kernel trick, evaluating the machine at a test point $\mathbf{x}$ requires computing 
+  \begin{equation}
+    f(\mathbf{x}) = \sum_{i=1}^N c_i k(\mathbf{x}_i,\mathbf{x})
+  \end{equation},
+   which requires $O(Nd)$ operations to compute and requires retaining much of the dataset unless the machine is very sparse. 
+   
+   This is often unacceptable for large datasets. On the other hand, after learning a hyperplane $\mathbf{w}$, a linear machine can be evaluated by simply computing 
+   \begin{equation}
+    f(\mathbf{x}) = \mathbf{w}^\prime \mathbf{z}(\mathbf{x}),
+   \end{equation} which, with the randomized feature maps presented here, requires only $O(D+d)$ operations and storage.
+
+\end{frame}
+
+\section{Random Fourier Features}
+
+\begin{frame}
+  \frametitle{Random Fourier Features introduction}
+
+  
+Let be $x \in \R^d$  (a column vector), the first set of random features consists of random 
+Fourier bases
+\begin{equation}
+    \cos(w^T x + b) 
+\end{equation}
+where $w \in \R^d$  and $b$ are random variables. 
+
+See that $T(x) = w^t x +b$ is affine transformation
+$T:\R^d \longrightarrow \R$  and then $\cos$ function maps
+$\cos: \R  \longrightarrow S^1$. 
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Algorithm: Random Fourier Features}
+
+  \textbf{Input:}$K$ a positive definite shift-invariant kernel $k(x,y) = k(x - y).$
+
+  \textbf{Output:} A randomized feature map $z(x): \R^d \longrightarrow \R^D$
+   so that $z(x)^T z(y) \approx k(x - y)$
+
+   Compute the Fourier transform $p$ of the kernel $k$: 
+  \begin{equation}
+      p(w) = \frac{1}{2 \pi}
+      \int
+      e^{-jw^T \delta}k(\delta) 
+      d \Delta. 
+   \end{equation}
+      \\
+   Draw $D$ iid samples 
+   $\{w_1, \ldots, w_D \} \subset \R^d$ from $p$ and
+   $D$ iid samples $b_1, \ldots, b_D \in \R$
+   from the uniform distribution on 
+   $[0, 2\pi]$. 
+   \\
+   Let 
+   \begin{equation}
+      z(x)
+      \equiv
+      \sqrt{\frac{2}{D}}
+      \left[ 
+          \cos(w_1^T x + b_1) 
+          \, 
+          \ldots
+          \cos(w_D^T x + b_D) 
+          \right]^T. 
+   \end{equation}
+  
+\end{frame}
+
+\begin{frame}
+  \frametitle{Proof I}
+  Our objective is to proof that $z(x)^Tz(y)$ is close to $k(x-y)$. 
+  Mathematically, we want to garante the uniform convergence of the Fourier Features. 
+  
+  \begin{theorem}[Bochner's theorem]
+    A continuos kernel $k(x,y) = k(x-y)$ on $\R^d$ is positive 
+    if and only if $k(\delta)$ is the Fourier transforme of a non-negative measure. 
+\end{theorem}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Proof II}
+
+  If a shift-invariant kernel $k(\delta)$ is properly scaled, Bochner’s theorem guarantees that its Fourier transform 
+$p(w)$
+is a proper probability distribution.
+
+Defining $\zeta_w(x) = e^{jw^tx}$, we have
+
+\begin{equation}
+    \label{eq:bochnerTheorem}
+    k(x-y)
+    =
+    \int_{\R^d}
+    p(w)
+    e^{jw^t(x-y)}
+    dw
+    = 
+    E_w\left[
+        \zeta_w(x)
+        \zeta_w(y)^*
+    \right],
+\end{equation}
+where $\zeta_w(y)^* =  e^{- jw^tx}$ is the conjugate. 
+We have proof in (\ref{eq:bochnerTheorem}) that $  \zeta_w(x)
+\zeta_w(y)^*$ is a unbiased estimate of $k(x,y)$ when $w$ is drawn from $p$. 
+
+
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Proof III}
+
+  Defining 
+\begin{equation}
+    z_w(x) = \sqrt{2} \cos\left(w^T x + b\right), 
+\end{equation}
+where $w$ is drawn from a $p(w)$ and $b$ is drawn 
+uniformly from $[0,2\pi]$ we obtain that 
+
+Now we are going to proof that: 
+\begin{equation} \label{unbiases_stimator}
+    E \left[z_w(x) z_w(y) \right] = k(x,y). 
+\end{equation}
+
+\end{frame}
+
+
+
+
+\begin{frame}
+  \frametitle{Proof}
+
+  Secondly, as a consequence of the sum of angles: 
+
+\begin{align}
+    z_w(x) z_w(y) 
+    &=
+    2  \cos\left(w^T x + b\right) \cos\left(w^T y+ b\right)
+    \nonumber
+    \\
+    \nonumber
+    & = 
+    \left(
+    \cos\left(w^T x + b\right) \cos\left(w^T y+ b\right)
+    + 
+    \sin\left(w^T x + b\right) \sin\left(w^T y+ b\right)
+    \right)
+    \\
+    \nonumber
+   & \quad +
+   \left(
+    \cos\left(w^T x + b\right) \cos\left(w^T y+ b\right)
+    -
+    \sin\left(w^T x + b\right) \sin\left(w^T y+ b\right)
+    \right)
+    \\
+    & = 
+    \cos\left(w^T (x-y) \right) + \cos\left(w^T (x+y) + 2b \right).
+\end{align}
+
+
+\end{frame}
+
+\begin{frame}
+  \begin{align}
+    E\left[
+        \cos\left(w^T (x-y) \right)
+    \right]
+    = 
+    \frac{1}{2}
+    \left(
+        E\left[
+         e^{j w^T (x-y)}
+        \right]
+        + 
+        E\left[
+         e^{j w^T (y-x)}
+        \right]
+    \right)
+    = k(x,y),
+\end{align}
+since $k$ is symmetric and shift invariant and (\ref{eq:bochnerTheorem}).
+
+\pause 
+Finally, as a result of Euler formula and (\ref{eq:expected_value})
+\begin{equation}
+    E\left[
+        \cos\left(w^T (x+y) + 2b \right)
+    \right]
+    = 
+    0, 
+\end{equation}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Proof}
+
+  For $s \in \{1,-1\}$ notice that using chain rule and 
+$p(w)$ is a probability function and therefore 
+$\int_{\R^d} p(w) dw = 1$.
+\begin{align}
+    \label{eq:expected_value}
+    E\left[ e^{sj w^T(x+y)+s2b}\right]
+    & = 
+    \int_{\R^d} e^{sj w^T(x+y)+s2b} p(w) dw
+    \nonumber
+    \\
+    \nonumber
+    & = 
+    e^{s2b}\int_{\R^d} e^{sj w^T(x+y)} p(w) dw
+    \\
+    \nonumber
+    & = 
+    e^{s2b}\left\{ 
+        e^{sj w^T(x+y)} 
+        - 
+        \int j(x+y) e^{sj w (x + y)} dw
+    \right\}_{\R^d}
+    \\
+    & = 
+    e^{s2b}\left\{ 
+        e^{sj w^T(x+y)} 
+        - 
+         e^{sj w (x + y)} 
+    \right\}
+    = 0.
+\end{align}
+
+
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{First bound}
+
+  We can lower the variance of the estimate of the kernel by concatenating $D$ randomly chosen $z_w$ into one $D-dimensional$ vector and normalizing each component by 
+$\sqrt{2}$.
+ The inner product 
+ \begin{equation}
+    \zetas = \frac{1}{D}\sum_{j=1}^{D} z_{w_j}(x)z_{w_j}(y)
+ \end{equation}
+ is a sample average of $z_w$ and is therefore a lower variance approximation to the expectation. 
+
+\end{frame}
+
+
+
+\begin{frame}
+
+  \begin{theorem}{Hoeffding's inequality}
+    Let $X_1, \ldots, X_n$ be independent random variables
+    such that $a_i \leq X_i \leq b_i$ almost surely.
+    Consider $S_n = X_1 +  \ldots + X_n$.
+
+    The Hoeffding's theorem states that, for all $t>0$,
+    \begin{equation}
+        P\left(
+            |S_n - E[S_n]| \geq t
+        \right)
+        \leq 
+        2 \exp \left(
+            - \frac{2 t^2}{\sum_{i=1}^n (b_i -a_i)^2}
+        \right)
+    \end{equation}
+\end{theorem}
+(See the proof at \cite{Hoeffding1994}). 
+
+Using Hoeffding's inequality
+ \begin{equation}
+    \label{eq:firstBound}
+    P\left(
+        |\zetas - k(x,y)|
+        > \varepsilon
+    \right)
+    \leq 
+    2 
+    \exp\left[
+        - \frac{2\varepsilon^2}{(4/\sqrt{D})^2}
+    \right]
+    \leq
+    2 
+    \exp\left[
+        - \frac{D\varepsilon^2}{8}
+    \right]
+ \end{equation}
+
+\end{frame}
+
+\begin{frame}
+
+  \begin{theorem}{Uniform convergence of Fourier features}
+    Let $M$ be a compact subset of $\mathbb{R}^d$ with diameter $\operatorname{diam}(M)$. Then, for the mapping $z$ defined in Algorithm 1, we have
+    \begin{align}
+        P \left[
+            \sup_{x,y \in M} |z(x)^T z(y) - k(y,x)|
+            \geq \varepsilon
+        \right]
+        \leq 
+        2^8
+        \left(
+            \frac{\sigma_p \operatorname{diam}(M)}{\varepsilon}
+        \right)
+        \exp \left(
+            - \frac{D \varepsilon^2}{4(d+2)},
+        \right)
+    \end{align}
+    where $\sigma_p^2 \equiv \mathbb{E}_{p(\omega)}[\omega' \omega]$ is the second moment of the Fourier transform of $k$.
+
+    Further, 
+    $$
+    \sup_{x,y \in M} |z(x)^T z(y) - k(y,x)|
+    \geq \varepsilon
+    $$
+    with any constant probability when 
+    $D = \Omega \left( 
+        \frac{d}{\epsilon^2}
+        \log{\frac{\sigma_p diam{M}}{\epsilon}}
+    \right).$
+  \end{theorem}
+
+\end{frame}
+
+\begin{frame}
+  
+  
+%  first paragraph proof 
+Define $s(x,y) \equiv \zetas$, and $f(x,y) \equiv s(x,y) - k(y,x)$, 
+and for a bigger enough $D$ in the first inequality (\ref{eq:firstBound}) and by construction  we would have 
+$|f(x,y) | \leq 2$ and $E[f(x,y)] = 0$. 
+
+
+% segundo párrafo demostración 
+Let define
+\begin{equation}
+    M_\Delta
+    =
+    \left\{
+    x - y : x,y \in M
+    \right\}.
+\end{equation}
+
+\end{frame}
+
+\begin{frame}
+
+Since $M$ is compact, $M_\Delta$ is also compact. Moreover, by the triangle inequality, $M_\Delta$ has diameter at most twice $\operatorname{diam}(M)$. Since $M_\Delta$ is compact, we can construct an $\epsilon$-net that covers $M_\Delta$ using at most $T = (4\operatorname{diam}(M)/r)^d$ balls of radius $r$.
+
+Let $\{\Delta_i\}{i=1}^T$ denote the centers of these balls, 
+and let $L_f$ be the Lipschitz constant of $f$. 
+If we ensure that $|f(\Delta_i)| < \epsilon/2$ for all $i$ and $L_f < \epsilon$, 
+then we can guarantee that
+ $|f(\Delta_i)| < \epsilon$ for all $\Delta \in M_\Delta$ 
+by using triangle inequality, Lipschitz definition and all the hypothesis: 
+\begin{align}
+    \left|f \left( \Delta\right) \right|
+    & =
+    \left|
+        f \left( \Delta\right) 
+        \pm
+        f \left( \Delta_i \right) 
+    \right|
+    \\
+    & \leq
+    L_f \left| \Delta -  \Delta_i \right|
+    \\ & \leq
+    L_f r + \frac{\varepsilon}{2} = \varepsilon. 
+\end{align}
+
+\end{frame}
+
+\begin{frame}
+% Third paragraph 
+
+Since $f$ differentiable, 
+$L_f = \|\nabla f(\Delta^*)\|$, where 
+$\Delta^* = \arg \max_{\Delta \in M_\Delta} \|\nabla f(\Delta)\|$.
+
+By variance expansion in expectations and $s$ gradient, 
+\begin{align}
+    E[\nabla s(\Delta)]
+    = 
+    \nabla k(\Delta),
+\end{align}
+so 
+\begin{align}
+    E[L_f^2]
+    & =
+    E\left[
+        \|
+        \nabla s(\Delta*)
+        -
+        \nabla k(\Delta^*)\|^2
+    \right]
+    = 
+    \\
+    & = 
+    E\left[
+        \|
+        \nabla s(\Delta*)
+       \|^2
+    \right]
+    -
+    E\left[
+        \|
+        \nabla k(\Delta*)
+       \|
+    \right]^2
+    \\
+    &
+    \leq 
+    E\left[
+        \|
+        \nabla s(\Delta*)
+       \|^2
+    \right]
+    \\
+    &
+    =  
+    E\left[
+        w^2 \sin(2 \Delta)
+    \right]
+    \\
+    &
+    \leq 
+    E\left[
+        \|
+        w
+       \|^2
+    \right]
+    = \sigma^2_p.
+\end{align}
+
+\end{frame}
+
+\begin{frame}
+By Markov's inequality, 
+
+\begin{equation}
+    P \left[
+        L_f^2 \geq t
+    \right]
+    \leq 
+    \frac{E[L_f^2]}{t}, 
+\end{equation}
+so 
+\begin{equation}
+    P
+    \left[
+        L_f
+        \geq 
+        \frac{\epsilon}{2r}
+    \right]
+    \leq 
+    \left(
+        \frac{2 r \sigma_p}{\epsilon}
+    \right)^2.
+\end{equation}
+
+The onion bound followed by Hoeffding's 
+inequality applied to the anchors in the 
+$\epsilon-$net gives 
+\begin{equation}
+    P\left[
+       \cup^T_{i = 1} 
+       \|f(\Delta_i)\| 
+       \geq \epsilon / 2
+    \right]
+    \leq 2T
+    \exp\left(-D^2/8\right).
+\end{equation}
+
+\end{frame}
+
+\begin{frame}
+Combining previous inequalities in term of the free variable $r$: 
+
+\begin{align}
+    P\left[
+        \sup_{\Delta \in M_\Delta}
+        |f(\Delta)| 
+        \leq \epsilon
+    \right]
+    & =  
+    P\left[
+        \cup^T_{i = 1} 
+       \|f(\Delta_i)\| 
+       \leq \epsilon / 2
+       \wedge
+       L_f \leq \frac{\epsilon}{2 r}
+    \right]
+    \\ 
+    & = 
+    1 - 
+    P\left[
+        \cup^T_{i = 1} 
+       \|f(\Delta_i)\| 
+       \geq \epsilon / 2
+       \vee
+       L_f \geq \frac{\epsilon}{2 r}
+    \right]
+    \\ 
+    & = 
+    1 - 
+    P\left[
+        \cup^T_{i = 1} 
+       \|f(\Delta_i)\| 
+       \geq \epsilon / 2
+       \right]
+       - 
+       P\left[
+       L_f \geq \frac{\epsilon}{2 r}
+    \right]
+    \\ & 
+    \geq 
+    1 -2 \left(
+        \frac{4 diam(M)}{r}
+    \right)^d
+    \exp(-D \epsilon^2/8)
+    - \left(
+        \frac{2 r \sigma_p}{\epsilon}
+    \right)^2.
+\end{align}
+
+\end{frame}
+
+\begin{frame}
+This has the form $1-\kappa_1 r^{-d}-\kappa_2 r^2$. 
+Setting
+ $r=\left( \frac{k_1}{k_2}\right)\frac{1}{d+2}$ 
+ turns this to
+ \begin{equation}
+    1 - 
+    2 k_2^{\frac{d}{d+2}}
+    k_1^{\frac{d}{d+2}}, 
+ \end{equation}
+and assuming that $\frac{\sigma_p \operatorname{diam}(M)}{\epsilon} \geq 1$, proves the first part of the claim. To prove the second part of the claim, pick any probability for the right hand side and solve for $D$.
+
+
+  
+
+\end{frame}

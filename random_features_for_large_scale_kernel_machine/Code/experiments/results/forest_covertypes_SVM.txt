@@ -1,0 +1,4 @@
+Size:  (581012, 54)
+Target size:  (581012,)
+Time spent in SVM multiclas 5682.0328 s
+Score 0.7094

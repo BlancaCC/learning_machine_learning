@@ -1,0 +1,269 @@
+
+\section{Random Binning Features}  
+
+The algorithm we are going to present is: 
+
+\begin{algorithm}[hbt!]
+    \caption{Random Binning Features}\label{alg:RandomBinning Features}
+    \KwData{
+        \begin{itemize}
+            \item A point $x \in \R^d$.
+            \item A kernel function $k(x,y) =  \prod_{m=1}^d k_m(|x^m - y^m|)$, so that $p_m(\Delta) \equiv \Delta k_m''(\Delta)$ is a probability distribution on $\Delta \geq 0$.
+            \item a randomized feature map $z(x)$ so that $z(x)^Tz(y) \approx k(x-y)$.
+        \end{itemize}
+    }
+    \KwResult{
+        $$
+        z(x) 
+        \equiv 
+        \sqrt{\frac{1}{P}} 
+        \left[z_1(x), \ldots, z_p(x)\right]^T.
+        $$
+    }
+        \For{$p \in \{1, \ldots, P\}$ }{
+            Draw grid parameters $\delta, u \in \mathbb{R}^d$ with the pitch $\delta^m \sim p_m$, and shift $u^m$ from the uniform distribution on $[0, \delta^m]$.
+            \\
+             Let $z$ return the coordinate of the bin containing $x$ as a binary indicator vector 
+             $$
+             z_p(x) \equiv 
+             \text{hash}
+             \left(
+                \left\lfloor 
+                    \frac{x^1 - u^1}{\delta^1} 
+                \right\rfloor,
+                 \dots, 
+                 \left\lfloor
+                    \frac{x^d - u^d}{\delta^d} 
+                \right\rfloor
+             \right).
+             $$ 
+        }
+    \end{algorithm}
+
+    As we will see in the deduction of the algorithm, the concept of hashing is a 
+    necessary tool for its implementation. Strictly speaking, partitioning the real 
+    numbers (or a $d$-multidimensional real space) into segments (of $d$-balls) of length $r$ would result in a bijective partition of the natural numbers, and therefore the binary encoding of the real numbers (or space) would have 
+    the potential to have as many digits as we want.
+
+    However, in real life, the space we are dealing with is not 
+    the entire real numbers but rather a compact subset of it, which is therefore finite.
+    
+    
+\section{Algorithm deduction} 
+
+The second randomized mapping partitions the input space by utilizing grids that are randomly shifted and have random resolutions. It assigns a binary bit string to each input point, based on the bin in which the point falls. Since this mapping uses rectilinear grids, it is particularly suitable for kernels that depend solely on $L_1$.
+
+The grids are designed such that the likelihood of two points $x$ and $y$ being assigned to the same bin is proportional to $k(x,y)$. The inner product between two transformed points is proportional to the number of times they are binned together, providing an unbiased estimate of $k(x,y)$.
+
+% Corregido hasta aquí
+
+Now we are going to define the kernel. Firstly we define a real (one dimension) approach: 
+
+Let  $k_{hat}(x, y; \delta) : \R \times \R \times \R^+$ be the kernel defined as: 
+\begin{equation}
+    k_{hat}(x, y; \delta)
+    = 
+    \max 
+    \left(
+    0,
+    1 - \frac{|x-y|}{\delta}
+    \right)  
+\end{equation}
+
+Notice that 
+
+\begin{equation}
+    1 - \frac{|x-y|}{\delta} > 0
+    \Leftrightarrow
+    \delta > |x-y |
+\end{equation}
+and since $\frac{|x-y|}{\delta} > 0$ for every $x,y \in \R$
+\begin{equation}
+     0 \leq k_{hat}(x, y; \delta) \leq 1.
+\end{equation} 
+Moreover, this induce a real partition of pitch $\delta$ and $k_{hat}$ is the probability that two pints $x,y$ falls in the same grid since 
+they would be in the same grid if 
+
+\begin{equation}
+ \hat{x} = \hat{y}
+   \Leftrightarrow
+        \left\lfloor
+            \frac{x-u}{\delta}
+        \right\rfloor
+        = 
+        \left\lfloor
+        \frac{y-u}{\delta}
+    \right\rfloor
+.
+\end{equation}
+It would happen if
+\begin{equation}
+    \left| 
+        \hat{x} - \frac{x-u}{\delta}
+    \right|
+    \leq 0.5
+    \text{ and }
+    \left| 
+        \hat{x} - \frac{y-u}{\delta}
+    \right|
+    \leq 0.5.
+\end{equation}
+Adding both constraint and using triangle inequality we obtain 
+\begin{equation}
+    1 \geq \left| 
+        \frac{x-u}{\delta} - \frac{y-u}{\delta}
+    \right|
+    \geq
+        \frac{ |x-y|}{\delta}.
+\end{equation}
+
+So fixed $\delta$ the probability of two points $x,y$  to fall in the same bin is the grid $k_{hat}(x,y,\delta)$. 
+
+If we encode $\hat{x}$ as a binary indicator vector $z(x)$ over the bins, 
+$z(x)^T z(y) = 1$ if $x$ and $y$ fall in the same bin and zero otherwise, so 
+\begin{equation}
+    P\left[
+        z(x)^T z(y) = 1 | \delta
+    \right]
+    = 
+    E\left[
+        z(x)^T z(y) = 1 | \delta
+    \right]
+    = 
+    k_{hat}(x,y,\delta). 
+\end{equation}
+therefore $z$ is a random map for $k_{hat}$. 
+%%
+Let us now consider shift-invariant kernels that can be expressed as convex combinations of hat kernels on a compact subset of $\R \times \R$. Mathematically, this can be written as:
+
+\begin{equation}
+k(x,y) = \int_{0}^\infty k_{hat}(x,y,\delta) p(\delta) d\delta,
+\end{equation}
+
+where $k_{hat}(x,y,\delta)$ is the hat kernel with pitch $\delta$, $p(\delta)$ is a probability distribution over pitch values, and the integral is taken over all positive pitch values. In this formulation, if the pitch $\delta$ of the grid is sampled from $p$, and the shift $u$ is drawn uniformly from $[0,\delta]$, then the probability that $x$ and $y$ are binned together is given by $k(x,y)$.
+
+Before to continue we need to proof the following result: 
+\begin{lemma}
+    \label{eq:lema1}
+    Suppose a function $k(\Delta): \mathbb{R} \rightarrow \mathbb{R}$ is twice differentiable and has the form
+    \begin{equation}
+        k(\Delta) = \int_{\mathbb{R}} p(\delta) \max(0, 1-\Delta \delta) d\delta.
+    \end{equation}
+    Then $p(\delta) = \delta k''(\delta)$.
+\end{lemma}
+\begin{proof}
+    \begin{align}
+        k(\Delta) &= 
+        \int_{\mathbb{R}} p(\delta) \max(0, 1-\Delta \delta) d\delta
+        \\ 
+        & = 
+        % cero
+        \int_{0}^\Delta p(\delta) 0 d\delta
+        + 
+        \int_{\Delta}^\infty
+            p(\delta)
+            \left(1 - \frac{\Delta}{\delta}\right) 
+            d \delta
+        \\
+        &=
+        \int_{\Delta}^\infty
+            p(\delta)
+            d \delta
+        -
+        \int_{\Delta}^\infty
+            \frac{p(\delta)}{\delta}
+            d \delta. 
+    \end{align}
+
+Applying the Fundamental theorem of calculus and chain rules: 
+\begin{equation}
+   k'(\Delta)
+   = 
+   - p(\Delta)
+   - 
+   \left[
+    \int_{\Delta}^\infty
+            \frac{p(\delta)}{\delta}
+            d \delta
+    -
+    \Delta \frac{p(\Delta)}{\Delta}
+   \right] 
+   = - \int_{\Delta}^\infty
+   \frac{p(\delta)}{\delta}
+   d \delta.
+\end{equation}
+Applying again the Fundamental theorem oc calculus: 
+
+\begin{equation}
+    k''(\Delta)
+    = 
+    \frac{P(\Delta)}{\Delta}. 
+\end{equation}
+\end{proof}
+
+% Continuamos con el resultado  
+
+Lema 1 \ref{eq:lema1} shows that the function $p$ can be easily recovered from $k$ by setting 
+\begin{equation}
+    p(\delta) = \delta k''(\delta).   
+\end{equation}
+
+ For example, when considering the Laplacian kernel with $k_{\text{Laplacian}}(x, y) = \exp(-|x - y|)$, we have that $p(\delta)$ is the Gamma distribution given by $\delta \exp(-\delta)$. However, for the Gaussian kernel, $k(\delta)$ is not convex, resulting in $k''$ not being everywhere positive, and thus $\delta k''(\delta)$ is not a probability distribution. Therefore, this procedure does not yield a random map for the Gaussian.
+
+
+ Random maps for separable multivariate shift-invariant kernels of the form 
+ \begin{equation}
+    k(x - y) = \prod_{m=1}^d k_m(|x_m - y_m|)
+ \end{equation}
+  (such as the multivariate Laplacian kernel) 
+  can be constructed similarly if each $k_m$ can be expressed as a convex combination of hat kernels. 
+  
+  The above binning process is applied independently to each dimension of $\mathbb{R}^d$. The probability that $x^m$ and $y^m$ are binned together in dimension $m$ is $k_m(|x^m - y^m|)$. 
+  
+  Since the binning process is independent across dimensions, the probability that $x$ and $y$ are binned together in every dimension is 
+  \begin{equation}
+    \prod_{m=1}^d k_m(|x_m - y_m|) = k(x - y).
+  \end{equation}
+   
+  In this multivariate case, $z(x)$ encodes the integer vector $[\hat{x}^1, \dots, \hat{x}^d]$ corresponding to each bin of the $d$-dimensional grid as a binary indicator vector. In practice, to prevent overflows when computing $z(x)$ for large $d$, unoccupied bins are eliminated from the representation. Since there are never more bins than training points, this ensures that no overflow can occur.
+
+  We can again reduce the variance of the estimator $z(x)^Tz(y)$ by concatenating $P$ random binning functions $z$ into a larger list of features $z$ and scaling by $\sqrt{\frac{1}{P}}$. The inner product 
+  \begin{equation}
+    z(x)'z(y) = \frac{1}{P}\sum_{p=1}^P z_p(x)'z_p(y)
+  \end{equation}
+ is the average of $P$ independent $z(x)^Tz(y)$ and therefore has lower variance.
+
+ Since $z$ is binary, Hoeffding's inequality guarantees that for a fixed pair of points $x$ and $y$, $z(x)^\prime z(y)$ converges exponentially quickly to $k(x,y)$ as $P$ increases. Again, a much stronger claim is that this convergence holds simultaneously for all points:
+
+ \begin{claim}
+    Let $M$ be a compact subset of $\mathbb{R}^d$ with diameter $\text{diam}(M)$. Let $\alpha = \mathbb{E}[1/delta]$ and let $L_k$ denote the Lipschitz constant of $k$ with respect to the $L_1$ norm. With $z$ as above, we have:
+    \begin{equation}
+        P \left[
+            \sup_{x,y \in M} |z(x)^T z(y) - k(y,x)|
+            \geq \varepsilon
+        \right]
+        \geq
+        1 - 36 d P \alpha
+        \text{ diam}(M)
+        \exp\left(
+            \frac{
+                - 
+                \left( 
+                    \frac{P \epsilon^2}{8}
+                    +
+                    \ln \frac{\epsilon}{L_k}
+                \right)
+            }{d +1 }
+        \right)
+    \end{equation}
+ \end{claim}
+
+
+ \begin{proof}
+    The argument is similar to that of Claim 1. As $z$ is piecewise constant over $M$, one can partition $M \times M$ into several L1 balls, such that $k(x,y)$ varies only slightly and $z(x)$ and $z(y)$ are constant within each cell. At the centers of these cells, it is likely that $z(x)^T z(y)$ is close to $k(x, y)$, which implies that $k(x, y)$ and $z(x)^T z(y)$ are close throughout $M$.
+ \end{proof}
+
+
+
+
+

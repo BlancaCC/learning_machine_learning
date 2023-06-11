@@ -1,0 +1,77 @@
+% Text encoding
+\usepackage[english]{babel}
+
+% Justify text (package and function)
+% \apptocmd{command}{code}{success}{failure}
+\usepackage{ragged2e}
+\apptocmd{\frame}{}{\justifying}{} 
+% Justify text in \item
+\newcommand{\itemj}{\item \justifying}
+
+% If...else package
+\usepackage{ifthen}
+
+% Package to set transparent background image
+\usepackage{tikz}
+
+% Include image package
+\usepackage{graphicx}
+% Set default path for images
+\graphicspath{ {../../imgs/} }
+% Set figure number when included
+\setbeamertemplate{caption}[numbered]
+
+% Bibliography packages
+\usepackage[sort, round]{natbib}
+\bibliographystyle{plainnat}
+
+% Subfigures
+\usepackage[compatibility=false]{caption}
+\usepackage{subcaption}
+
+% pseudocode 
+%\usepackage[pass]{geometry}
+%\usepackage[margin=3cm]{geometry}
+\usepackage[linesnumbered,ruled,vlined]{algorithm2e}
+
+\newcommand{\zetas}{z(x)^T z(y)}
+
+% code 
+\usepackage{listings}
+\usepackage{xcolor}
+
+\lstdefinestyle{MyPythonStyle}{
+    backgroundcolor=\color{gray!10},
+    basicstyle=\ttfamily\small,
+    language=Python,
+    tabsize=4,
+    showstringspaces=false,
+    keywordstyle=\color{blue},
+    commentstyle=\color{green},
+    stringstyle=\color{red}
+}
+
+\lstdefinestyle{PythonStyle}{
+    backgroundcolor=\color{gray!5},
+    basicstyle=\ttfamily\footnotesize,
+    keywordstyle=\color{orange!90},
+    commentstyle=\color{blue!90},
+    stringstyle=\color{purple!90},
+    numberstyle=\tiny\color{gray!70},
+    rulecolor=\color{black},
+    frame=single,
+    framesep=3pt,
+    xleftmargin=6pt,
+    xrightmargin=6pt,
+    aboveskip=6pt,
+    belowskip=6pt,
+    breaklines=true,
+    breakatwhitespace=true,
+    showstringspaces=false,
+    tabsize=4,
+    numbers=left,
+    numbersep=5pt,
+    language=Python
+}
+
+

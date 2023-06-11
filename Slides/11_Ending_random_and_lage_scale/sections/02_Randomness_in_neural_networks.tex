@@ -1,0 +1,202 @@
+\section{Randomness in neural networks: an overview}
+
+\begin{frame}
+    \frametitle{Paper information}
+
+    \begin{itemize}
+        \item Title: \textbf{Randomness in Neural Networks: An Overview}. 
+        \item Authors:  Scardapane, Simone and Wang, Dianhui. 
+        \item Year: 2017
+        \item Number of cites: 285.
+        \item \cite{randomness-in-neural-networks}
+    \end{itemize}
+
+    Drawbacks: 
+    \begin{itemize}
+        \item No experimental results. 
+        \item Spend many sections in kernel random features we have already seen. 
+    \end{itemize}
+    
+\end{frame}
+
+\begin{frame}{Other articles}
+    \begin{itemize}
+        \item \textbf{A review on neural networks with random weights}. 
+        \item Authors:  Weipeng Cao and Xizhao Wang and Zhong Ming and Jinzhu Gao.
+        \item Year: 2018. 
+        \item Number of cites: 308. 
+        \item \cite{a-review-neural-network-with-random-weights}
+    \end{itemize}
+    
+\end{frame}
+
+\section{Randomness in neural networks: an overview}
+
+\begin{frame}
+    \frametitle{Main idea}
+
+    \textbf{Randomization is cheaper than optimization}
+
+    Three families: 
+    \begin{itemize}
+        \item \textit{Feedforward networks with random weights} (RW-FFN). 
+        \item Random features for kernel methods.
+        \item RC framework. 
+    \end{itemize}
+
+\end{frame}
+
+\subsection{Feedforwards Networks with Random Weights}
+
+\begin{frame}
+    \frametitle{Network Architecture}
+
+    \begin{equation}
+        f(x)
+        = 
+        \sum_{m = 1}^B
+        \beta_m h_m(x; w_m)
+        = 
+        \beta^T h_(x; w_1, \ldots, w_B). 
+    \end{equation}
+    where 
+    \begin{equation}
+        h_m(x) = g(a^T_m x + b_m).
+    \end{equation}
+
+    Randomness options: 
+    \begin{itemize}
+        \item 
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Randomnes in coefficients}
+    Random projection: A. 
+
+\end{frame}
+
+
+\begin{frame}
+    \frametitle{Randomnes in activation function}
+
+    In the second family of methods, each function
+is chosen instead as a radial basis function (RBF),
+typically of Gaussian shape:
+
+\begin{equation}
+    h_m(x)
+    = 
+    \exp\left\{
+        -a_m 
+        \|x - c_m\|_2^2 
+        \right\},
+\end{equation}
+Randomly chosen the centers $c$ and scaling factors $a_m$. 
+
+\end{frame}
+
+
+\begin{frame}
+    \frametitle{Training}
+    Compute $\beta^*$
+    \begin{equation}
+        \beta^*
+        = 
+        arg min_{\beta}
+        \left\{
+            \frac{1}{2}
+            \|H \beta - y\|^2_2
+            +
+            \frac{\lambda}{2}
+            \|\beta\|_{norm}
+        \right\}
+    \end{equation}
+
+    The minimization problem admit some kinds of algebraic or parallelization optimization. 
+\end{frame}
+\begin{frame}
+    \frametitle{Things to think!}
+\begin{itemize}
+    \item Why are we not training with gradient descent in the last layer?. 
+    \item Why are we not training some intermediate weights?
+\end{itemize}
+    They are simple ideas, is weird the have not been done before. 
+
+    \textbf{
+    Are truly interesting or randomness is bounded?}
+
+\end{frame}
+\begin{frame}
+    \frametitle{Universal Approximation Properties}
+
+    \begin{itemize}
+        \item The basic theoretical result on RW-FNNs was
+        proven in 1995 by Igelnik and Pao, 35 with later corrections made by Li et al. 
+
+        \item  The order of
+        approximation error is $\mathcal O(C/\sqrt{B})$ , where the constant C is independent of B.
+
+        \item There is
+        always a non-zero probability of an unlucky draw
+        from the probability distribution which will require
+        re-initialization at some stage of approximation. Furthermore, this rapid convergence of order $1/\sqrt{B}$
+        is assured only up to a given and fixed tolerance.
+
+        \item Random-weights models
+        still suffer from design choices, translated in free
+        parameters, which are difficult to set optimally with
+        the current mathematical framework, so practically
+        they involve many trials and cross validation to find
+        a good projection space, on top of the selection of
+        the number of hidden [processing elements] and the
+        nonlinear functions.
+    \end{itemize}
+
+\end{frame}
+
+
+\begin{frame}
+    \frametitle{RANDOM FEATURES FOR KERNEL
+    APPROXIMATION}
+
+    We have already delved deeper into the topic through the previous survey.
+\end{frame}
+\subsection{Recurrent Networks with random weights}
+\begin{frame}
+    \frametitle{Recurrent Networks with random weights}
+
+    Some families: 
+
+    Internal estate 
+
+    \begin{equation}
+        f[n] = h(W^r_i x[n] + W^r_r f[n-1] + W^r_0 y[n-1]),
+    \end{equation}
+    Or combination past present. 
+    \begin{equation}
+        f[n] =\lambda f[n] +
+         (1-\lambda)h(W^r_i x[n] + W^r_r f[n-1] + W^r_0 y[n-1]),
+    \end{equation}
+    Tn the following steps: 
+    \begin{equation}
+        y[n]
+        = 
+        (w^0_i)^T x[n]
+        + (W^0_r)^T f[n].
+    \end{equation}
+Training same that RW-FNN.
+\end{frame}
+
+\subsection{Theoretical properties of RC Networks}
+\begin{frame}
+    \frametitle{Theoretical properties of RC Networks}
+
+    \begin{itemize}
+        \item Initialization with uniform distribution in $[-1,1]$ is not a good idea in dynamic system ( could create oscillation or chaotic behaviors) due to vanish.
+        \item Echo state property can be guaranteed almost always by rescaling the matrix $W$ so that its spectral radius is less than 1. (Criterio is a heuristic)
+    \end{itemize}
+
+\end{frame}
+
+

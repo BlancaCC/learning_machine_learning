@@ -2,5 +2,16 @@
 
 To accelerate the training of kernel machines, 
 they propose to map the input data to a 
-randomized low-dimenal  feature space and 
+randomized low-dimensional  feature space and 
 then apply existing fast linear methods.
+
+SVMs are a powerful class of machine learning algorithms that can be used for both classification and regression tasks. 
+SVMs use a kernel function to map the input data into a higher dimensional space, where it becomes easier to separate the classes with a hyperplane. 
+SVMs are known for their ability to handle high-dimensional data and nonlinear relationships between variables. 
+However, SVMs can be computationally expensive, especially when dealing with large datasets, because they involve solving a convex optimization problem.
+
+Linear learning techniques, on the other hand, are a family of algorithms that are used for linear regression and classification problems.  These techniques work by fitting a linear function to the data, which can then be used to make predictions. Linear learning techniques are generally faster and simpler than SVMs, more quickly when the dimensionality of the data is small because they operate on the covariance matrix rather than the kernel matrix of the training data. However, they may not perform as well as SVMs when dealing with complex relationships between variables.
+
+
+The authors suggest a method to merge the benefits of both linear and nonlinear approaches. By drawing inspiration from randomized algorithms that estimate kernel matrices, they effectively convert the training and assessment of any kernel machine into the corresponding actions of a linear machine. This is achieved by converting the data into a relatively low-dimensional randomized feature space. Based on their experiments, the results show that the application of random features, together with simple linear learning techniques, achieve competitive results when compared to modern kernel-based classification and regression algorithms. Implementing random features greatly reduces the computational burden required for training, while obtaining similar or even better testing accuracy.
+

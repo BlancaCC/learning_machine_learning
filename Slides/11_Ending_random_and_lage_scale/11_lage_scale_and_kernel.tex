@@ -1,0 +1,36 @@
+\documentclass[english, xcolor=dvipsnames, aspectratio=169]{beamer}
+% packages
+\include{preamble/packages.tex}
+% Define colors variables
+\include{preamble/definitions.tex}
+\include{preamble/variables.tex}
+% Beamer parameters
+\include{preamble/beamer_parameters.tex}
+\include{preamble/commands.tex}
+
+
+
+\begin{document}
+
+\frame{\titlepage}
+
+% Complete table of contents (ToC)
+% \customToC{hideallsubsections}{}
+%\customToC{}{}
+
+%%%%%%% add sections here %%%%%%%
+\include{sections/01_Introduction.tex}
+\include{sections/02_Randomness_in_neural_networks.tex}
+\include{sections/03_sharp_analysis_of_low_rank_kernel_matrix.tex}
+\include{sections/04-Fast-and-scalable-polynomial-kernel.tex}
+\include{sections/05_large-scale-machine-learning}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Import bibliography from file sample.bib
+\begin{frame}[t, allowframebreaks]
+\frametitle{References}
+\bibliography{../../bibliography}
+\end{frame}
+
+\end{document}

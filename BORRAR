@@ -1,0 +1,97 @@
+
+\section{Computational cost}
+\begin{frame}
+  \frametitle{Computational cost}
+  \texbf{Random Fourier Features }
+  \cite{li2021sharp}: 
+  reducing the computational complexity (roughly from $O(n^3)$ in time and $O(n^2)$ in space to $O(n^2)$ and $O(n \sqrt{n})$ respectively) without having to trade-off the statistical prediction accuracy.
+  
+  \begin{center}
+    \resizebox{\textwidth}{!}{
+      
+    \begin{tabular}{ c | c |c |c | c}
+     Step & Task & Theory & Cost  & Memory \\ 
+     \hline
+       % step
+       1 
+       % Task
+      & Sampling Fourier components $u_1, \ldots u_m$ from $p(u)$.
+      & % Theory 
+        Inverse transform sampling, Accept or reject, Montecarlo. 
+      & % cost 
+      O(1)
+      & % Memory 
+      O(m)
+      \\  
+      % step------------
+      2  
+      & % Task
+      Compute
+      $
+      z_f(x) = \left(
+        \sin(u_1^T x), \cos(u_1^T x), 
+        \ldots,
+        \sin(u_m^T x), \cos(u_m^T x)
+      \right)
+      $
+      % Theory 
+      & 
+      & % cost 
+        O(2m)
+      & O(2m)
+    \end{tabular}
+    }
+    \end{center}
+
+    % nystrom
+    Nyström
+    \begin{center}
+      \resizebox{\textwidth}{!}{
+      \begin{tabular}{ c | c |c |c | c}
+       Step & Task & Theory & Cost  & Memory \\ 
+       \hline
+         % step --------------
+         1 
+         % Task
+        & Sampling
+        & % Theory 
+          
+        & % cost 
+        O(1)
+        & % Memory 
+        O(m)
+        \\  
+        % step------------
+        2  
+        & % Task
+        constructing a low rank matrix by  
+     $\hat{K}_r
+      = 
+      K_b 
+      \hat{K}^\dagger 
+      K_b^T.$
+        % Theory 
+        & 
+        SVD and matrix multiplication
+        & % cost 
+        $O(n^3)$
+        & $O(m^2)$
+        \\
+      \end{tabular}
+      }
+      \end{center}
+      
+
+      Ridge regression 
+      \begin{center}
+        {
+        \begin{tabular}{c | c}
+          Cost  & Memory \\ 
+         \hline
+         $O(m^2(N+m))$
+          & $O(mn + n)$
+        \end{tabular}
+        }
+        \end{center}
+  
+\end{frame}

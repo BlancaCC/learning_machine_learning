@@ -1,0 +1,605 @@
+\section{Random Fourier Features}
+
+Let be $x \in \R^d$  (a column vector), the first set of random features consists of random 
+Fourier bases
+\begin{equation}
+    \cos(w^T x + b) 
+\end{equation}
+where $w \in \R^d$  and $b$ are random variables. 
+
+See that $T(x) = w^t x +b$ is affine transformation
+$T:\R^d \longrightarrow \R$  and then $\cos$ function maps
+$\cos: \R  \longrightarrow S^1$. 
+
+The algorithm is defined as: 
+
+\begin{algorithm}[hbt!]
+    \caption{Random Fourier Features}\label{alg:two}
+    \KwData{$K$ a positive definite shift-invariant kernel $k(x,y) = k(x - y).$}
+    \KwResult{A randomized feature map $z(x): \R^d \longrightarrow \R^D$
+     so that $z(x)^T z(y) \approx k(x - y)$}
+
+     Compute the Fourier transform $p$ of the kernel $k$: 
+    \begin{equation}\label{eq:fourier_transformation}
+        p(w) = \frac{1}{2 \pi}
+        \int
+        e^{-jw^T \delta}k(\delta) 
+        d \Delta. 
+     \end{equation}
+        \\
+     Draw $D$ iid samples 
+     $\{w_1, \ldots, w_D \} \subset \R^d$ from $p$ and
+     $D$ iid samples $b_1, \ldots, b_D \in \R$
+     from the uniform distribution on 
+     $[0, 2\pi]$. 
+     \\
+     Let 
+     \begin{equation}
+        z(x)
+        \equiv
+        \sqrt{\frac{2}{D}}
+        \left[ 
+            \cos(w_1^T x + b_1) 
+            \, 
+            \ldots
+            \cos(w_D^T x + b_D) 
+            \right]^T. 
+     \end{equation}
+    \end{algorithm}
+
+
+\subsection{Implementation considerations}
+\subsubsection{Fourier transformation}
+
+In order to compute (\ref{eq:fourier_transformation})
+we have different alternatives: 
+
+\begin{itemize}
+    \item Use (\ref{eq:fourier_transformation}) and a numerical method to compute the integral (as Montecarlo). 
+    \item Use a library \textit{scipy Fourier Transforms}\footnote{
+        See \url{https://docs.scipy.org/doc/scipy/tutorial/fft.html} (last consult on 03-07-23).
+    }
+    \item Write explicitly its formula. 
+\end{itemize}
+
+For simplicity and since we use widely known kernels we are going to follow the third alternative. 
+The implementation of the kernel and its Fourier Transformation can be found at \texttt{/Code/random\_feature/kernels.py}. 
+
+\subsubsection{How to draw examples from a probability distribution $p$}
+
+Let $p : \R^d \longrightarrow \R$ a probability function. In order to draw samples from this distribution 
+we are going to use the following algorithm: 
+
+
+
+\begin{algorithm}[hbt!]
+    \caption{Generate example from a probability distribution }\label{alg:two}
+    \KwData{
+        \begin{itemize}
+            \item Probability density function $p : \R^d \longrightarrow \R$,
+            \item dimension of the output vectors $d$, 
+            \item number of vectors: $n$,
+            \item maximum absolute value of the coefficients of the vectors: $K$. 
+        \end{itemize}
+    }
+    \KwResult{
+        Radom variables: 
+        $\left\{w_1, \ldots, w_n\right\} \subset \R^d$ r
+        that are examples of $p$. 
+        }
+  
+        Let $\Lambda \gets \{\}$ be the solution. 
+        \\
+        \While{The size of $\Lambda$ is less than $n$}{
+            Let $w \gets U([-k, k]^d)$ \Comment*[r]{random vector of $d$ vector that follow a uniform distribution in $[-k, k]$ interval}
+            %
+            $$u \gets U([0,1])$$
+            %
+            \If{$u \leq p(w)$}{
+               $$
+               \Lambda \gets  \Lambda \cup \{w\}.
+               $$ 
+            }
+        }
+        \Return{$\Lambda$} 
+    \end{algorithm}
+
+Ideally, $K$ should be as big as  possible. 
+However, the bigger $K$ is, the bigger the norm of the vectors $w$
+and the lower their probability. 
+
+If the probability of acceptance is too low, we would end up rejecting too many vectors, making the algorithm slow. Therefore, so we need to find a balance 
+between mathematical rigor and pragmatism choosing $k$. 
+
+This function is done at \texttt{random\_feature/random\_samples.py}. 
+
+
+\subsection{Some popular shift-invariant kernels and their Fourier transforms}
+
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{|c|c|c|}
+    \hline
+     Kernel name & $k(x-y)$ & p(w) \\
+     \hline
+     % Gaussian kernel 
+     Gaussian 
+     & $e^{- \frac{\| x- y\|^2_2}{2}}$
+    & 
+    $(2 \pi)^{-\frac{D}{2}} e^{- \frac{\| w\|^2_2}{2}}$ 
+    \\
+    \hline
+        % Laplacian 
+        $\R^2$ Laplacian 
+        & 
+        $e^{
+            - \|\Delta\|_1
+        }$
+        &
+        $\prod_{d = 1}^D \frac{1}{\pi(1+w_d^2)}$
+        \\
+    \hline
+    \end{tabular}
+    \caption{Some popular shift-invariant kernels and their Fourier transforms}
+\end{table}
+
+
+\subsection{Convergence proof}
+
+Our objective is to proof that $z(x)^Tz(y)$ is close to $k(x-y)$. 
+Mathematically, we want to garante the uniform convergence of the Fourier Features. 
+
+% TODO add scheme of the proof
+
+\begin{theorem}[Bochner's theorem]
+    A continuos kernel $k(x,y) = k(x-y)$ on $\R^d$ is positive 
+    if and only if $k(\delta)$ is the Fourier transforme of a non-negative measure. 
+\end{theorem}
+
+\begin{proof}
+If a shift-invariant kernel $k(\delta)$ is properly scaled, Bochner’s theorem guarantees that its Fourier transform 
+$p(w)$
+is a proper probability distribution.
+
+Defining $\zeta_w(x) = e^{jw^tx}$, we have
+
+\begin{equation}
+    \label{eq:bochnerTheorem}
+    k(x-y)
+    =
+    \int_{\R^d}
+    p(w)
+    e^{jw^t(x-y)}
+    dw
+    = 
+    E_w\left[
+        \zeta_w(x)
+        \zeta_w(y)^*
+    \right],
+\end{equation}
+where $\zeta_w(y)^* =  e^{- jw^tx}$ is the conjugate. 
+We have proof in (\ref{eq:bochnerTheorem}) that $  \zeta_w(x)
+\zeta_w(y)^*$ is a unbiased estimate of $k(x,y)$ when $w$ is drawn from $p$. 
+
+Notice that $p: \R^d \longrightarrow [0,1]$ is a real function, 
+and the $k(\Delta)$ is real too, so the integral (\ref{eq:bochnerTheorem})
+converges when $\zeta_w(x)
+\zeta_w(y)^*$ is real.
+
+Defining 
+\begin{equation}
+    z_w(x) = \sqrt{2} \cos\left(w^T x + b\right), 
+\end{equation}
+where $w$ is drawn from a $p(w)$ and $b$ is drawn 
+uniformly from $[0,2\pi]$ we obtain that 
+
+\begin{equation} \label{unbiases_stimator}
+    E \left[z_w(x) z_w(y) \right] = k(x,y). 
+\end{equation}
+
+Firstly, for $s \in \{1,-1\}$ notice that using chain rule and 
+$p(w)$ is a probability function and therefore 
+$\int_{\R^d} p(w) dw = 1$.
+\begin{align}
+    \label{eq:expected_value}
+    E\left[ e^{sj w^T(x+y)+s2b}\right]
+    & = 
+    \int_{\R^d} e^{sj w^T(x+y)+s2b} p(w) dw
+    \nonumber
+    \\
+    \nonumber
+    & = 
+    e^{s2b}\int_{\R^d} e^{sj w^T(x+y)} p(w) dw
+    \\
+    \nonumber
+    & = 
+    e^{s2b}\left\{ 
+        e^{sj w^T(x+y)} 
+        - 
+        \int j(x+y) e^{sj w (x + y)} dw
+    \right\}_{\R^d}
+    \\
+    & = 
+    e^{s2b}\left\{ 
+        e^{sj w^T(x+y)} 
+        - 
+         e^{sj w (x + y)} 
+    \right\}
+    = 0.
+\end{align}
+
+Secondly, as a consequence of the sum of angles: 
+
+\begin{align}
+    z_w(x) z_w(y) 
+    &=
+    2  \cos\left(w^T x + b\right) \cos\left(w^T y+ b\right)
+    \nonumber
+    \\
+    \nonumber
+    & = 
+    \left(
+    \cos\left(w^T x + b\right) \cos\left(w^T y+ b\right)
+    + 
+    \sin\left(w^T x + b\right) \sin\left(w^T y+ b\right)
+    \right)
+    \\
+    \nonumber
+   & \quad +
+   \left(
+    \cos\left(w^T x + b\right) \cos\left(w^T y+ b\right)
+    -
+    \sin\left(w^T x + b\right) \sin\left(w^T y+ b\right)
+    \right)
+    \\
+    & = 
+    \cos\left(w^T (x-y) \right) + \cos\left(w^T (x+y) + 2b \right).
+\end{align}
+
+Thanks to Euler formula
+\begin{equation}
+    \cos\left(w^T (x-y) \right)
+    = 
+    \frac{1}{2}
+    \left(
+        e^{j w^T (x-y)}
+        + 
+        e^{- j w^T (x-y)}
+    \right)
+    = 
+     \frac{1}{2}
+    \left(
+        e^{j w^T (x-y)}
+        + 
+        e^{j w^T (y-x)}
+    \right),
+\end{equation}
+and its expected value is 
+\begin{align}
+    E\left[
+        \cos\left(w^T (x-y) \right)
+    \right]
+    = 
+    \frac{1}{2}
+    \left(
+        E\left[
+         e^{j w^T (x-y)}
+        \right]
+        + 
+        E\left[
+         e^{j w^T (y-x)}
+        \right]
+    \right)
+    = k(x,y),
+\end{align}
+since $k$ is symmetric and shift invariant and (\ref{eq:bochnerTheorem}).
+
+Finally, as a result of Euler formula and (\ref{eq:expected_value})
+\begin{equation}
+    E\left[
+        \cos\left(w^T (x+y) + 2b \right)
+    \right]
+    = 
+    0, 
+\end{equation}
+so we have proved (\ref{unbiases_stimator}).
+
+\end{proof}
+
+We can lower the variance of the estimate of the kernel by concatenating $D$ randomly chosen $z_w$ into one $D-dimensional$ vector and normalizing each component by 
+$\sqrt{2}$.
+ The inner product 
+ \begin{equation}
+    \zetas = \frac{1}{D}\sum_{j=1}^{D} z_{w_j}(x)z_{w_j}(y)
+ \end{equation}
+ is a sample average of $z_w$ and is therefore a lower variance approximation to the expectation (\ref{eq:bochnerTheorem}). 
+
+% Primera desigualdad 
+Now we are going to achieve a first bound for the distance between $\zetas$ and the kernel $k(x,y)$. 
+
+\begin{theorem}{Hoeffding's inequality}
+    Let $X_1, \ldots, X_n$ be independent random variables
+    such that $a_i \leq X_i \leq b_i$ almost surely.
+    Consider $S_n = X_1 +  \ldots + X_n$.
+
+    The Hoeffding's theorem states that, for all $t>0$,
+    \begin{equation}
+        P\left(
+            |S_n - E[S_n]| \geq t
+        \right)
+        \leq 
+        2 \exp \left(
+            - \frac{2 t^2}{\sum_{i=1}^n (b_i -a_i)^2}
+        \right)
+    \end{equation}
+\end{theorem}
+(See the proof at \cite{Hoeffding1994}). 
+
+Let $z_{w_j}(x)z_{w_j}(y)$ our  normalized $D$ independent random variables which are bounded: 
+\begin{equation}
+    \frac{-2}{\sqrt{D}} 
+    \leq 
+    \frac{-2}{D} 
+    \leq z_{w_j}(x)z_{w_j}(y) 
+    \leq  
+    \frac{2}{D} 
+    \leq 
+    \frac{2}{\sqrt{D}}. 
+\end{equation}
+Using Hoeffding's inequality
+ \begin{equation}
+    \label{eq:firstBound}
+    P\left(
+        |\zetas - k(x,y)|
+        > \varepsilon
+    \right)
+    \leq 
+    2 
+    \exp\left[
+        - \frac{2\varepsilon^2}{(4/\sqrt{D})^2}
+    \right]
+    \leq
+    2 
+    \exp\left[
+        - \frac{D\varepsilon^2}{8}
+    \right]
+ \end{equation}
+
+% Fin de la primera desigualdad 
+
+
+% Comienzo del refinamiento
+Now in order to proof the correctness of our algorithm we need to guarantees that 
+guarantees that $z(x)'z(y)$ is close to $k(x-y)$ 
+for the centers of an $\epsilon$-net over $M \times M$.
+
+\begin{claim}
+    (Uniform convergence of Fourier features) 
+    Let $M$ be a compact subset of $\mathbb{R}^d$ with diameter $\operatorname{diam}(M)$. Then, for the mapping $z$ defined in Algorithm 1, we have
+    \begin{align}
+        P \left[
+            \sup_{x,y \in M} |z(x)^T z(y) - k(y,x)|
+            \geq \varepsilon
+        \right]
+        \leq 
+        2^8
+        \left(
+            \frac{\sigma_p \operatorname{diam}(M)}{\varepsilon}
+        \right)
+        \exp \left(
+            - \frac{D \varepsilon^2}{4(d+2)},
+        \right)
+    \end{align}
+    where $\sigma_p^2 \equiv \mathbb{E}_{p(\omega)}[\omega' \omega]$ is the second moment of the Fourier transform of $k$.
+
+    Further, 
+    $$
+    \sup_{x,y \in M} |z(x)^T z(y) - k(y,x)|
+    \geq \varepsilon
+    $$
+    with any constant probability when 
+    $D = \Omega \left( 
+        \frac{d}{\epsilon^2}
+        \log{\frac{\sigma_p diam{M}}{\epsilon}}
+    \right).$
+\end{claim}
+
+\begin{proof}
+  
+%  first paragraph proof 
+Define $s(x,y) \equiv \zetas$, and $f(x,y) \equiv s(x,y) - k(y,x)$, 
+and for a bigger enough $D$ in the first inequality (\ref{eq:firstBound}) and by construction  we would have 
+$|f(x,y) | \leq 2$ and $E[f(x,y)] = 0$. 
+
+
+% segundo párrafo demostración 
+Let define
+\begin{equation}
+    M_\Delta
+    =
+    \left\{
+    x - y : x,y \in M
+    \right\}.
+\end{equation}
+Since $M$ is compact, $M_\Delta$ is also compact. Moreover, by the triangle inequality, $M_\Delta$ has diameter at most twice $\operatorname{diam}(M)$. Since $M_\Delta$ is compact, we can construct an $\epsilon$-net that covers $M_\Delta$ using at most $T = (4\operatorname{diam}(M)/r)^d$ balls of radius $r$.
+
+Let $\{\Delta_i\}{i=1}^T$ denote the centers of these balls, 
+and let $L_f$ be the Lipschitz constant of $f$. 
+If we ensure that $|f(\Delta_i)| < \epsilon/2$ for all $i$ and $L_f < \epsilon$, 
+then we can guarantee that
+ $|f(\Delta_i)| < \epsilon$ for all $\Delta \in M_\Delta$ 
+by using triangle inequality, Lipschitz definition and all the hypothesis: 
+\begin{align}
+    \left|f \left( \Delta\right) \right|
+    & =
+    \left|
+        f \left( \Delta\right) 
+        \pm
+        f \left( \Delta_i \right) 
+    \right|
+    \\
+    & \leq
+    L_f \left| \Delta -  \Delta_i \right|
+    \\ & \leq
+    L_f r + \frac{\varepsilon}{2} = \varepsilon. 
+\end{align}
+
+% Third paragraph 
+
+Since $f$ differentiable, 
+$L_f = \|\nabla f(\Delta^*)\|$, where 
+$\Delta^* = \arg \max_{\Delta \in M_\Delta} \|\nabla f(\Delta)\|$.
+
+By variance expansion in expectations and $s$ gradient, 
+\begin{align}
+    E[\nabla s(\Delta)]
+    = 
+    \nabla k(\Delta),
+\end{align}
+so 
+\begin{align}
+    E[L_f^2]
+    & =
+    E\left[
+        \|
+        \nabla s(\Delta*)
+        -
+        \nabla k(\Delta^*)\|^2
+    \right]
+    = 
+    \\
+    & = 
+    E\left[
+        \|
+        \nabla s(\Delta*)
+       \|^2
+    \right]
+    -
+    E\left[
+        \|
+        \nabla k(\Delta*)
+       \|
+    \right]^2
+    \\
+    &
+    \leq 
+    E\left[
+        \|
+        \nabla s(\Delta*)
+       \|^2
+    \right]
+    \\
+    &
+    =  
+    E\left[
+        w^2 \sin(2 \Delta)
+    \right]
+    \\
+    &
+    \leq 
+    E\left[
+        \|
+        w
+       \|^2
+    \right]
+    = \sigma^2_p.
+\end{align}
+
+By Markov's inequality, 
+
+\begin{equation}
+    P \left[
+        L_f^2 \geq t
+    \right]
+    \leq 
+    \frac{E[L_f^2]}{t}, 
+\end{equation}
+so 
+\begin{equation}
+    P
+    \left[
+        L_f
+        \geq 
+        \frac{\epsilon}{2r}
+    \right]
+    \leq 
+    \left(
+        \frac{2 r \sigma_p}{\epsilon}
+    \right)^2.
+\end{equation}
+
+The onion bound followed by Hoeffding's 
+inequality applied to the anchors in the 
+$\epsilon-$net gives 
+\begin{equation}
+    P\left[
+       \cup^T_{i = 1} 
+       \|f(\Delta_i)\| 
+       \geq \epsilon / 2
+    \right]
+    \leq 2T
+    \exp\left(-D^2/8\right).
+\end{equation}
+
+Combining previous inequalities in term of the free variable $r$: 
+
+\begin{align}
+    P\left[
+        \sup_{\Delta \in M_\Delta}
+        |f(\Delta)| 
+        \leq \epsilon
+    \right]
+    & =  
+    P\left[
+        \cup^T_{i = 1} 
+       \|f(\Delta_i)\| 
+       \leq \epsilon / 2
+       \wedge
+       L_f \leq \frac{\epsilon}{2 r}
+    \right]
+    \\ 
+    & = 
+    1 - 
+    P\left[
+        \cup^T_{i = 1} 
+       \|f(\Delta_i)\| 
+       \geq \epsilon / 2
+       \vee
+       L_f \geq \frac{\epsilon}{2 r}
+    \right]
+    \\ 
+    & = 
+    1 - 
+    P\left[
+        \cup^T_{i = 1} 
+       \|f(\Delta_i)\| 
+       \geq \epsilon / 2
+       \right]
+       - 
+       P\left[
+       L_f \geq \frac{\epsilon}{2 r}
+    \right]
+    \\ & 
+    \geq 
+    1 -2 \left(
+        \frac{4 diam(M)}{r}
+    \right)^d
+    \exp(-D \epsilon^2/8)
+    - \left(
+        \frac{2 r \sigma_p}{\epsilon}
+    \right)^2.
+\end{align}
+
+This has the form $1-\kappa_1 r^{-d}-\kappa_2 r^2$. 
+Setting
+ $r=\left( \frac{k_1}{k_2}\right)\frac{1}{d+2}$ 
+ turns this to
+ \begin{equation}
+    1 - 
+    2 k_2^{\frac{d}{d+2}}
+    k_1^{\frac{d}{d+2}}, 
+ \end{equation}
+and assuming that $\frac{\sigma_p \operatorname{diam}(M)}{\epsilon} \geq 1$, proves the first part of the claim. To prove the second part of the claim, pick any probability for the right hand side and solve for $D$.
+
+\end{proof}
+

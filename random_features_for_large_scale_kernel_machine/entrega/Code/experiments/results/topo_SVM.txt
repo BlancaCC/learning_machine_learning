@@ -1,0 +1,5 @@
+SVM for topo_2_1 dataset (for regression)
+Size:  (8885, 266)
+Target size:  (8885,)
+Time spent in SVR regression0.0209 s
+Score R^2-0.2467

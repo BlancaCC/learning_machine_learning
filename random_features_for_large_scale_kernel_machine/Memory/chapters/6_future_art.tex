@@ -1,0 +1,34 @@
+\chapter{Extensions}
+\section{Published articles}
+\subsection{HARFE: Hard-Ridge Random Feature Expansion}
+\cite{HARFE:_Hard-Ridge_Random_Feature_Expansion}
+The authors of the article propose a method called the hard-ridge random feature expansion method (HARFE) for approximating high-dimensional sparse additive functions. The method involves utilizing a hard-thresholding pursuit-based algorithm to approximate the coefficients with respect to the random feature matrix, using a random sparse connectivity pattern in the matrix to match the additive function assumption. The approach balances between obtaining sparse models that use fewer terms in their representation and ridge-based smoothing that tends to be robust to noise and outliers. The authors prove that the HARFE method converges with a given error bound depending on the noise and the parameters of the sparse ridge regression model. Numerical results on synthetic data and real datasets show that the HARFE approach obtains lower (or comparable) error than other state-of-the-art algorithms.
+
+\subsection{Toward Large Kernel Models}
+
+\cite{Toward_Large_Kernel_Models}
+
+The article maintain the interest in kernel machines, claiming that kernel machines have been additionally bolstered by the discovery of their equivalence to wide neural networks in certain regimes. However, a key feature of DNNs is their ability to scale the model size and training data size independently, whereas in traditional kernel machines model size is tied to data size. Because of this coupling, scaling kernel machines to large data has been computationally challenging. 
+
+The article presents a new method for constructing large-scale general kernel models that decouples the model and data, allowing for training on large datasets. The method is called EigenPro 3.0 and is based on projected dual preconditioned SGD. The authors demonstrate that EigenPro 3.0 enables scaling to model and data sizes that were previously not possible with existing kernel methods.
+
+\subsection*{Other older extensions}
+
+1 "Convolutional Random Features for Point Cloud Analysis" (2018) - This work extends the idea of random features to point cloud data, which are common in computer vision and robotics applications. The authors propose a technique for extracting random features from point clouds and show that their approach improves performance on point cloud classification and segmentation tasks.
+2 "Distributed Random Features for Large-Scale Kernel Machines" (2013) - This work proposes a technique for distributing the calculation of random features across a cluster of computers, enabling the use of this technique on even larger datasets.
+
+3."Random Fourier Approximations for Positive Definite Kernels: Improved Bounds" (2015) - This work extends the theoretical results presented in the original article, providing better bounds for the approximation error when using random features to approximate positive definite kernels.
+
+4."Random Features for Time-Series Analysis" (2019) - This work proposes a technique for extracting random features from time-series data, which are common in applications such as stock price prediction and anomaly detection. The authors show that their approach improves performance on time-series prediction tasks.
+These are just some of the most important extensions of the "Random Features for Large-Scale Kernel Machines" article. Since its publication, there have been many other related research efforts that have further explored the possibilities of random features in machine learning and kernel theory.
+
+\section{My proposal}
+
+As we saw at CENSUS random features is an interesting tools to improve time but have some major faults: 
+
+The hypotheses required for kernel functions directly impact the class of functions we can explore, which can lead to a fitting error. Another issue is that depending on the chosen method, the results can vary dramatically, and if hyperparameter tuning is added, the search for the optimal fit can become overly laborious. Therefore, we propose exploring the following areas:
+
+1.  Discovering new mathematical hypotheses that relax the conditions of kernel functions.
+2. Identifying techniques or methods that automate the selection of kernels or other hyperparameters.
+
+

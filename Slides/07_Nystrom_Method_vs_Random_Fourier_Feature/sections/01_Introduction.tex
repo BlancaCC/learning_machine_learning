@@ -1,0 +1,387 @@
+% Section name and highlighted ToC
+%\renewcommand{\sectiontitle}{Introduction}
+%\section{\sectiontitle}
+%\customToC{currentsection,hideothersubsections}{}
+
+% Section name and highlighted ToC
+%\renewcommand{\subsectiontitle}{What is machine learning?}
+%\subsection{\subsectiontitle}
+
+
+\begin{frame}{Overview}
+  \tableofcontents
+\end{frame}
+%
+
+\section{Introduction}
+\begin{frame}
+  \frametitle{Explored articles}
+\begin{enumerate}
+  \item Nyström Method vs Random Fourier Features: A Theoretical and Empirical Comparison (ver \cite{NystromVSRandomFourierFeatures}).
+  \item Using the Nyström Method to Speed Up Kernel Machines (ver \cite{NystromMethodToSpeedUpKernelMachines})
+\end{enumerate}
+
+\textbf{Objective:} Understand the different between Nyström Method and  Random Fourier Features. 
+  
+\end{frame}
+
+\section {similarities}
+\begin{frame}
+  \frametitle{Context}
+
+\begin{itemize}
+  \item One limitation of kernel methods is their high computational cost, which is at least quadratic in the
+number of training examples, due to the calculation of kernel matrix.
+  \item To avoid computing kernel matrix, one common approach is to approximate a kernel learning prob-
+lem with a linear prediction problem. 
+\end{itemize}
+
+\bf{Two alternatives and their hypothesis}
+\begin{itemize}
+  \item Random Fourier features  (only for shift-invariant kernels).
+  \item Nyström method. 
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Same usage}
+\bf{Nyström} {\tiny See \url{https://scikit-learn.org/stable/modules/generated/sklearn.kernel\_approximation.Nystroem.html#sklearn.kernel_approximation.Nystroem}}
+  \begin{lstlisting}[style=PythonStyle]
+    class sklearn.kernel_approximation.Nystroem(
+      # rbf kernel
+      kernel='rbf', *, gamma=None, 
+      # other kernels
+      coef0=None, degree=None,kernel_params=None,
+      n_components=100,
+      # others
+      random_state=None, n_jobs=None)
+  \end{lstlisting}
+
+  \bf{RFF}{ \tiny \url{https://scikit-learn.org/stable/modules/generated/sklearn.kernel_approximation.RBFSampler.html}}
+  \begin{lstlisting}[style=PythonStyle]
+    class sklearn.kernel_approximation.RBFSampler(*, gamma=1.0, n_components=100, random_state=None)
+  \end{lstlisting}
+
+
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Same usage sklearn}
+\bf{Nyström} 
+  \begin{lstlisting}[style=PythonStyle]
+    >>> from sklearn import datasets, svm
+    >>> from sklearn.kernel_approximation import Nystroem
+    >>> X, y = datasets.load_digits(n_class=9, return_X_y=True)
+    >>> data = X / 16.
+    >>> clf = svm.LinearSVC()
+    >>> feature_map_nystroem = Nystroem(gamma=.2,
+    ...                                 random_state=1,
+    ...                                 n_components=300)
+    >>> data_transformed = feature_map_nystroem.fit_transform(data)
+    >>> clf.fit(data_transformed, y)
+  \end{lstlisting}
+
+
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Same usage sklearn}
+
+  \bf{RFF}
+  \begin{lstlisting}[style=PythonStyle]
+    >>> from sklearn.kernel_approximation import RBFSampler
+    >>> from sklearn.linear_model import SGDClassifier
+    >>> rbf_feature = RBFSampler(gamma=1, random_state=1)
+    >>> X_features = rbf_feature.fit_transform(X)
+    >>> clf = SGDClassifier(max_iter=5, tol=1e-3)
+    >>> clf.fit(X_features, y)
+    SGDClassifier(max_iter=5)
+  \end{lstlisting}
+
+\end{frame}  
+
+\section{Differences}
+
+\begin{frame}
+  \frametitle{Working in a unified framework for Approximate Large-Scale Kernel Learning}
+  \begin{itemize}
+    \item We are focus on the RBF kernel.
+    \item Our goal is to efficiently learn a kernel prediction function by solving the fol-
+    lowing optimization problem: 
+    \begin{equation}
+      \min_{f \in \mathcal{H}_D}
+        \frac{\lambda}{2} \|f\|^2_{H_k} 
+        +
+        \frac{1}{N}
+          \sum_{i = 1}^N 
+            l(f(x_i), y_i).
+    \end{equation}
+    \item  $H_k$ is the RKHS endowed by the kernel $K$. 
+    \item $H_D = \text{span}(K(x_1, \cdot), \ldots, K(x_N, \cdot))$, \bf{The high computational cost of kernel learning arises from the fact that we have to search for an optimal classifier $f$ in this space.}
+    \item $l(z,y)$ is a convex loss function. 
+  \end{itemize}
+
+\end{frame}
+
+\subsection{Random Fourier Features Definition}
+
+
+\begin{frame}
+  \frametitle{Random Fourier Features Definition}
+\begin{itemize}
+  \item The random Fourier features are constructed by first sampling Fourier components $u_1, \ldots u_m$ from $p(u)$. 
+  \item Projecting each example to  $u_1, \ldots u_m$.
+  \item Then passing them through sine and cosine 
+  \begin{equation}
+    z_f(x) = \left(
+      \sin(u_1^T x), \cos(u_1^T x), 
+      \ldots,
+      \sin(u_m^T x), \cos(u_m^T x)
+    \right).
+  \end{equation}
+  \item Let define $H_a^f = \text{span}(s_1, c_1, \ldots, s_m, c_m)$ where $s_i(x) = \sin(u_i^T x)$.
+  \item The linear machine learnt by solving 
+ 
+    \begin{equation}
+      \min_{f \in \mathcal{H}_a^f}
+        \frac{\lambda}{2} \|f\|^2_{H_k} 
+        +
+        \frac{1}{N}
+          \sum_{i = 1}^N 
+            l(f(x_i), y_i).
+  \end{equation}
+  is $f(x) = w^T z_f(x)$.
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Error bound in RFF}
+
+\begin{equation}
+  O(N^{-1/2} + m^{-1/2})
+\end{equation}  
+where $N$ is the number of training examples and 
+$m$ is the number of sampled Fourier components.
+
+\end{frame}
+
+\subsection{The Nyström method}
+
+\begin{frame}
+  \frametitle{The Nyström method (see \cite{NystromMethodToSpeedUpKernelMachines})}
+
+  Let $K$ be partitioned into blocks 
+  $K_{m,m}$, $K_{n-m,m} = K^T_{m,n-m}$ and 
+  $K_{n-m,n-m}$. 
+  The approximation is 
+  \begin{equation}
+    \tilde K
+    = 
+    K_{n, m}
+    K_{m,m}^{-1}
+    K_{m,n}.
+  \end{equation}
+
+  See math foundation on blackboard. 
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{The Nyström method approximates the full kernel matrix $K$ by}
+
+  \begin{itemize}
+    \item First sampling $m$ examples denoted by
+    $\hat x_i, \cdots,\hat x_m$. 
+    \item Then constructing a low rank matrix by  
+    \begin{equation}
+      \hat{K}_r
+      = 
+      K_b 
+      \hat{K}^\dagger 
+      K_b^T, 
+    \end{equation}
+    where $K_b = \left[k(x_i, \hat x_j)\right]$,
+    $\hat{K}^\dagger$ is the pseudo inverse of $\hat{K}$. 
+
+    \item In order to train the linear machine, we derive a vector representation: 
+    \begin{equation}
+      z_n(x)
+      = 
+      \hat{D}^{-\frac{1}{2}} \hat V_r^T 
+      \left(
+        K(x,\hat{x}_1),
+        \ldots,
+        K(x,\hat{x}_m)
+        \right)^T,
+    \end{equation}
+    where $\hat D_r = dia(\hat \lambda_1, \ldots, \hat \lambda_r)$ and $V_r$ the eigenvectors in columns. 
+    \item $H^n_a = \text{span}(\hat \varphi_1, \ldots, \hat \varphi_r)$ where $\hat \varphi_i$ are the first $r$ normalized eigenfunctions of the operator $L_m$. 
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Error bound in Nyström methods}
+
+\begin{equation}
+    O( m^{-1/2}) +  O( m^{-1/2}) 
+\end{equation}  
+\begin{itemize}
+  \item The approximation error of the Nyström method, measured in
+  spectral norm is $O( m^{-1/2})$. (See \cite{JMLR:v6:drineas05a}) 
+  \item The generalization performance
+  caused by the approximation of the Nyström method $O( m^{-1/2})$. (see \cite{pmlr-v9-cortes10a}) 
+\end{itemize}
+where 
+$m$ is the number of sampled training examples.
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Difference}
+
+  \begin{itemize}
+    \item Randomness  and data independence. 
+    \item Hypothesis: Nyström adapt better to data. 
+    \item Experiment see article. 
+    \item Theoretical proof see article. 
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{To deep in}
+
+  \begin{itemize}
+    \item Math proofs \cite{NystromVSRandomFourierFeatures}.
+    \item For mathematical bound of Nyström: \cite{JMLR:v6:drineas05a} and \cite{pmlr-v9-cortes10a}. 
+  \end{itemize}
+
+
+\end{frame}
+\section{Computational cost}
+\begin{frame}
+  \frametitle{Random Fourier Features computational cost}
+
+  \begin{center}
+    \resizebox{\textwidth}{!}{
+    \begin{tabular}{ c | c |c |c | c}
+     Step & Task & Theory & Cost  & Memory \\ 
+     \hline
+       % step
+       1 
+       % Task
+      & Sampling Fourier components $u_1, \ldots u_m$ from $p(u)$.
+      & % Theory 
+        Inverse transform sampling, Accept or reject, Montecarlo. 
+      & % cost 
+      O(1)
+      & % Memory 
+      O(m)
+      \\  
+      % step------------
+      2  
+      & % Task
+      Compute
+      $
+      z_f(x) = \left(
+        \sin(u_1^T x), \cos(u_1^T x), 
+        \ldots,
+        \sin(u_m^T x), \cos(u_m^T x)
+      \right)
+      $
+      % Theory 
+      & 
+      & % cost 
+        O(m)
+      & O(2m)
+    \end{tabular}
+    }
+    \end{center}
+
+
+    % nystrom
+    Nyström
+    \begin{center}
+      \resizebox{\textwidth}{!}{
+      \begin{tabular}{ c | c |c |c | c}
+       Step & Task & Theory & Cost  & Memory \\ 
+       \hline
+         % step --------------
+         1 
+         % Task
+        & Sampling
+        & % Theory 
+          
+        & % cost 
+        O(1)
+        & % Memory 
+        O(m)
+        \\  
+        % step------------
+        2  
+        & % Task
+        constructing a low rank matrix by  
+     $\hat{K}_r
+      = 
+      K_b 
+      \hat{K}^\dagger 
+      K_b^T.$
+        % Theory 
+        & 
+        SVD and matrix multiplication
+        & % cost 
+        $O(n^3)$
+        & $O(m^2)$
+        \\
+      \end{tabular}
+      }
+      \end{center}
+      
+
+      Ridge regression 
+      \begin{center}
+        {
+        \begin{tabular}{c | c}
+          Cost  & Memory \\ 
+         \hline
+         $O(m^2(N+m))$
+          & $O(mn + n)$
+        \end{tabular}
+        }
+        \end{center}
+  
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Next week }
+
+  \begin{enumerate}
+    \item \textbf{Nystroem Method vs Random Fourier Features: A Theoretical and Empirical Comparison, Advances in Neural Information Processing Systems 2012}
+    
+    \item Random features for kernel approximation: A survey on algorithms, theory, and beyond
+    \item \textbf{Williams, C.K.I. and Seeger, M. “Using the Nystroem method to speed up kernel machines”, Advances in neural information processing systems 2001
+    T. Yang, Y. Li, M. Mahdavi, R. Jin and Z. Zhou }
+    \item Weighted Sums of Random Kitchen Sinks: Replacing minimization with randomization in learning.
+    \item Randomness in neural networks: an overview
+    \item Fast and scalable polynomial kernels via explicit feature maps
+    \item On the error of random Fourier features
+    \item A survey on large-scale machine learning
+    \item Sharp analysis of low-rank kernel matrix approximations
+\end{enumerate}
+  
+
+\end{frame}
+
+
+
+
+
+
+
+
+
+
+

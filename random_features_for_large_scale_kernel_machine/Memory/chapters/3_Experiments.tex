@@ -1,1 +1,58 @@
 \chapter{Experiments}
+
+\section{Description}
+
+In order to reproduce the experiments we are going to train 
+four models in classification and regression problems: 
+
+\begin{itemize}
+    \item A lest squares problem with Radom Fourier features. 
+    \item A lest squares problem with Radom Binning Features. 
+    \item Core Vector Machine,
+    \item and a classic Support Vector Machine. 
+\end{itemize}
+
+The implementation we are going to use are: 
+\begin{itemize}
+    \item For Random Fourier Features we are going to use sklearn: 
+\url{https://scikit-learn.org/stable/modules/generated/sklearn.kernel_approximation.RBFSampler.html}, 
+\item  for a lest squares problem with Random Binning Features \url{https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.KBinsDiscretizer.html}
+\item  For the linear problems for classification \url{https://scikit-learn.org/stable/modules/linear_model.html}. 
+
+\item SVM \url{https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html}
+\end{itemize}
+
+\section*{Datasets}
+The dataset used in \cite{Random_Features_for_Large-Scale_Kernel_Machines} is the same as the one used in \cite{Tsang2005CoreVM}, except for the synthetic dataset.
+
+So our datasets are: 
+
+\begin{itemize}
+    \item USPS: \url{https://datasets.activeloop.ai/docs/ml/datasets/usps-dataset/}. 
+    \item CENSUS: \url{https://www.kaggle.com/datasets/uciml/adult-census-income?resource=download}
+    \item \url{https://scikit-learn.org/stable/modules/generated/sklearn.datasets.fetch_covtype.html}
+    \item TOPO \url{https://www.openml.org/search?type=data&sort=runs&status=any&qualities.NumberOfClasses=lte_1&qualities.NumberOfFeatures=between_100_1000&qualities.NumberOfInstances=between_1000_10000&id=422}
+    
+\end{itemize}
+
+\subsection*{How to see experiment}
+
+As example Census experiment is done in a jupyter notebook. Topo and forest covertypes can be 
+executed typing \texttt{make topo} and \texttt{make forest\_covertypes}, the results will appears 
+in results directory. 
+
+
+\subsection{Results and conclusions}
+
+You can find the mentioned data in the results folder and the census Jupyter notebook.
+
+It is challenging to compare the results with the original article because, despite being relatively well-documented, we have only found the largest dimension databases that we could not execute on our computer due to computational constraints.
+
+The most illustrative result obtained was for CENSUS, where an improvement in execution time was observed, as indicated in the article. However, there was also a reduction in precision compared to the test results. This reduction was mitigated with Random Binning Features.
+
+On the other hand, Forest Covertype showed a significant improvement in execution time but accompanied by a decrease in precision, which opens the possibility to try other kernels or methods to maintain the execution time while improving precision.
+
+The TOPO database turned out to be a negative case in all respects. Neither SVM nor feature methods achieved decent results. Therefore, it is not worth noting the trend in execution times.
+
+
+

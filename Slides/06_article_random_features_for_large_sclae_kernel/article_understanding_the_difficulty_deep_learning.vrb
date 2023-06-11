@@ -1,0 +1,20 @@
+\frametitle{How to use Random Binning Features}
+
+\begin{lstlisting}[style=PythonStyle]
+    >>> from sklearn.preprocessing import KBinsDiscretizer
+    >>> X = [[0,100],[0,1],[1,0],[1,1],
+    [2,2],[-1,1],[-1,1]]
+    >>> est = KBinsDiscretizer(n_bins=3, encode='ordinal', strategy='uniform')
+    >>> est.fit(X)
+    KBinsDiscretizer(...)
+    >>> Xt = est.transform(X)
+    >>> Xt
+    array([[1., 2.],
+    [1., 0.],
+    [2., 0.],
+    [2., 0.],
+    [2., 0.],
+    [0., 0.],
+    [0., 0.]])
+\end{lstlisting}
+
