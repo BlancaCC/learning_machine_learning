@@ -22,7 +22,7 @@
 #others
 
 .DS_Store
-*.pdf
+
 
 */*_files
 *.html
